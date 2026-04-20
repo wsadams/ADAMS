@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.D.A.M.S. v2.0</title>
+<title>A.D.A.M.S. v2.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Josefin+Sans:wght@600;700&family=Raleway:wght@700&family=Outfit:wght@700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -87,12 +87,14 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 .page-content{flex:1;padding-bottom:4px;}
 
 /* ══ FLASH ══ */
-.sync-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background .3s;}
+.sync-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .3s;}
 .sync-dot.synced{background:#4CAF78;}
-.sync-dot.syncing{background:#C9A84C;animation:syncpulse .8s infinite;}
-.sync-dot.offline{background:#888;}
+.sync-dot.syncing{background:#D4A030;animation:syncpulse .7s infinite;}
+.sync-dot.error{background:#D05050;}
+.sync-dot.preview{background:#C9A84C;}
+.sync-dot.offline{background:#D05050;}
 .sync-dot.local{background:#555;}
-@keyframes syncpulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes syncpulse{0%,100%{opacity:1;}50%{opacity:.25;}}
 #flash{position:fixed;top:72px;right:14px;background:rgba(124,111,205,.11);border:1px solid var(--acc-b);color:var(--acc2);padding:5px 13px;border-radius:7px;font-size:11px;font-family:var(--fm);z-index:700;opacity:0;transition:opacity .22s;pointer-events:none;}
 #flash.show{opacity:1;}
 
@@ -318,6 +320,18 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 <body>
 <div id="body-bg"></div>
 <div id="flash">Saved ✦</div>
+<!-- DB status indicator: fixed bottom-right -->
+<div id="dbStatus" title="Supabase connection status" style="
+  position:fixed;bottom:18px;right:18px;z-index:800;
+  display:flex;align-items:center;gap:7px;
+  background:rgba(10,8,18,.85);border:1px solid rgba(124,111,205,.2);
+  border-radius:20px;padding:5px 12px 5px 9px;
+  backdrop-filter:blur(6px);cursor:default;
+  transition:opacity .3s;
+">
+  <div id="syncDot" class="sync-dot local"></div>
+  <span id="syncLabel" style="font-family:var(--fm);font-size:10px;color:rgba(168,159,245,.55);letter-spacing:.5px">Connecting…</span>
+</div>
 
 <!-- HEADER -->
 <div class="header-wrap">
@@ -326,7 +340,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
       <div class="logo-acronym" id="logoAcronym">Ascended Master Database of Affirmations, Quotes &amp; Mantras</div>
     </div>
     <div class="hdr-right">
-      <span class="hdr-ver">v2.0</span>
+      <span class="hdr-ver">v2.1</span>
       <button class="hdr-btn" onclick="openPanel()">+ Add New</button>
       <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
       <button class="hdr-icon" onclick="toggleFS()" title="Fullscreen">⛶</button>
@@ -671,23 +685,22 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
           <input type="text" id="sbKeyInp" placeholder="eyJ…" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcGZxb3R6Y3luaXprcnFibndsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDQyNTIsImV4cCI6MjA5MTA4MDI1Mn0.3kPVj8WJEJrTYf14Wzskt-DtrG1uzHoAx6PUvGvWK2Q" style="width:100%;padding:7px 10px;background:var(--inp);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:var(--fm);font-size:12px;outline:none;" oninput="cfg.sbKey=this.value"></div>
           <button class="btn btn-acc btn-sm" onclick="saveSupabaseCreds()" style="align-self:flex-start">Save &amp; Connect</button>
         </div>
-        <div style="margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.6">After connecting, use <b style="color:var(--muted2)">Sync → Push All</b> to upload your local data to Supabase the first time.</div>
-        <div class="s-row" style="margin-top:8px">
-          <div><div class="s-label">Push All Local Data</div><div class="s-sub">Upload everything to Supabase (first-time migration)</div></div>
-          <button class="btn btn-ghost btn-sm" onclick="pushAllToSupabase()">Push All ↑</button>
-        </div>
-        <div class="s-row">
-          <div><div class="s-label">Pull from Supabase</div><div class="s-sub">Overwrite local data with Supabase data</div></div>
-          <button class="btn btn-ghost btn-sm" onclick="syncFromSupabase()">Pull ↓</button>
-        </div>
+        <div style="margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.6">All data saves directly to Supabase in real time. No local storage is used for data.</div>
       </div>
 
       <div class="s-sec">
         <div class="s-sec-title">Data</div>
         <div class="s-row"><div><div class="s-label">Export Affirmations</div><div class="s-sub">Download all affirmations as JSON</div></div><button class="btn btn-ghost btn-sm" onclick="exportData()">Export JSON</button></div>
-        <div class="s-row"><div><div class="s-label">Export Settings</div><div class="s-sub">Download your current settings as JSON</div></div><button class="btn btn-ghost btn-sm" onclick="exportSettings()">Export Settings</button></div>
-        <div class="s-row"><div><div class="s-label">Clear All Data</div><div class="s-sub">Permanently deletes everything</div></div><button class="btn btn-sm" style="background:rgba(200,60,60,.07);color:#C86060;border:1px solid rgba(200,60,60,.15)" onclick="clearAll()">Clear All</button></div>
-        <div class="s-row"><div><div class="s-label">Storage Note</div><div class="s-sub">Settings save to localStorage now. When Supabase is connected, all settings and data will persist in the database automatically.</div></div></div>
+        <div class="s-row">
+          <div><div class="s-label">Export Settings</div><div class="s-sub">Download your current settings as JSON</div></div>
+          <button class="btn btn-ghost btn-sm" onclick="exportSettings()">Export Settings</button>
+        </div>
+        <div class="s-row">
+          <div><div class="s-label">Import Settings</div><div class="s-sub">Restore settings from a previously exported JSON file</div></div>
+          <label class="btn btn-ghost btn-sm" style="cursor:pointer">Import Settings<input type="file" accept=".json" onchange="importSettings(event)" style="display:none"></label>
+        </div>
+
+
       </div>
 
     </div>
@@ -788,10 +801,30 @@ const sb = {
 
 let SB_READY = true; // credentials baked in
 
+function setSyncStatus(state, detail) {
+  const dot = document.getElementById("syncDot");
+  const lbl = document.getElementById("syncLabel");
+  if(!dot || !lbl) return;
+  dot.className = "sync-dot " + state;
+  const labels = {syncing:"Syncing…", synced:"Connected ✓", error:"Connection error", offline:"Offline", preview:"Preview mode", local:"Not connected"};
+  lbl.textContent = detail || labels[state] || state;
+}
+
 
 /* ═══════════════════════════ SEED ═══════════════════════════ */
 const SEED = [
-  {id:1,type:"Affirmation",text:"I AM the Violet Flame in action in me now! I AM the Violet Flame to Light alone I bow! I AM the Violet Flame in mighty Cosmic Power! I AM the Light of God shining every hour!",master:"Saint Germain",source:"The I AM Discourses",notes:"Invokes the Seventh Ray of transmutation to purify karma and free the soul from all limitation.",tags:["Violet Flame","Purification","Saint Germain"],fav:true,flagged:false,created:"2024-01-15T10:00:00Z",modified:"2024-01-15T10:00:00Z"}
+  {id:1,type:"Affirmation",text:"I AM the Violet Flame in action in me now! I AM the Violet Flame to Light alone I bow! I AM the Violet Flame in mighty Cosmic Power! I AM the Light of God shining every hour!",master:"Saint Germain",source:"The I AM Discourses",notes:"Invokes the Seventh Ray of transmutation to purify karma and free the soul from all limitation.",tags:["Violet Flame","Purification","Saint Germain"],fav:true,flagged:false,created:"2024-01-15T10:00:00Z",modified:"2024-01-15T10:00:00Z"},
+  {id:2,type:"Decree",text:"In the Name of the Beloved Mighty Victorious Presence of God, I AM in me, I call to the Heart of the Great Central Sun Magnet! Release now the Full Momentum of Divine Love into my world!",master:"Mighty Victory",source:"Pearls of Wisdom, Vol. 12",notes:"Connects directly to the Great Central Sun Magnet, drawing the highest frequencies of cosmic love into the physical world.",tags:["Great Central Sun","Love","Victory"],fav:false,flagged:false,created:"2024-02-01T08:30:00Z",modified:"2024-02-01T08:30:00Z"},
+  {id:3,type:"Affirmation",text:"I AM the Resurrection and the Life of every cell and atom of my being now made manifest.",master:"Jesus the Christ",source:"The Lost Teachings of Jesus",notes:"The Resurrection flame rebuilds and restores every part of the four lower bodies to divine perfection.",tags:["Resurrection","Healing","Christ"],fav:true,flagged:false,created:"2024-02-10T14:00:00Z",modified:"2024-02-10T14:00:00Z"},
+  {id:4,type:"Quote",text:"The Violet Flame is the gift of the Holy Spirit to the people of Earth in this age. Use it freely, use it joyfully, use it with full faith that it will work for you.",master:"Saint Germain",source:"Saint Germain On Prophecy",notes:"The Violet Flame is freely given and available to all who call upon it.",tags:["Violet Flame","Saint Germain"],fav:false,flagged:false,created:"2024-02-14T09:00:00Z",modified:"2024-02-14T09:00:00Z"},
+  {id:5,type:"Decree",text:"Beloved I AM Presence bright, Round me seal your Tube of Light. From Ascended Master Flame, Called forth now in God's own name. Let it keep my temple free, From all discord sent to me.",master:"El Morya",source:"The Chela and the Path",notes:"Erects the Tube of Light — a pillar of divine protection that no discord may penetrate.",tags:["Protection","Tube of Light","El Morya"],fav:false,flagged:false,created:"2024-03-01T07:00:00Z",modified:"2024-03-01T07:00:00Z"},
+  {id:6,type:"Affirmation",text:"I AM the abundance of God made manifest in my life. The supply of the universe flows to me now in perfect, divine order.",master:"Abundance Elohim",source:"Personal Revelation",notes:"Affirms the I AM Presence as the open door to infinite supply on the Yellow Ray of Abundance.",tags:["Abundance","Supply","Yellow Ray"],fav:true,flagged:false,created:"2024-03-15T11:00:00Z",modified:"2024-03-15T11:00:00Z"},
+  {id:7,type:"Prayer",text:"Beloved I AM Presence and Holy Christ Self — I ask for the Light of God to blaze through me now, consuming all that is less than perfection, and revealing the Sacred Fire of my true divine nature.",master:"Archangel Michael",source:"The Archangels and the Disciples",notes:"A prayer calling forth the Sacred Fire through the I AM Presence to transmute and purify all four lower bodies.",tags:["Sacred Fire","Protection","Blue Ray","Archangel Michael"],fav:false,flagged:false,created:"2024-04-01T06:00:00Z",modified:"2024-04-01T06:00:00Z"},
+  {id:8,type:"Quote",text:"The Honor Flame burns in the heart of every true chela of the Great White Brotherhood. To know honor is to know God.",master:"El Morya",source:"El Morya on Chela and Path",notes:"The Honor Flame on the First Blue Ray is foundational to discipleship under the Hierarchy.",tags:["Honor Flame","El Morya","Blue Ray"],fav:false,flagged:false,created:"2024-04-10T12:00:00Z",modified:"2024-04-10T12:00:00Z"},
+  {id:9,type:"Affirmation",text:"I AM the Pink Flame of Love divine, the Rose of God I AM. I radiate God's Perfect Love to every soul I meet, and every heart responds to the I AM.",master:"Lady Master Venus",source:"Venus and the Love Ray",notes:"Invokes the Third Ray of Divine Love through the Pink Flame as held by Lady Master Venus.",tags:["Pink Ray of Love","Lady Venus","Love"],fav:true,flagged:false,created:"2024-04-20T09:00:00Z",modified:"2024-04-20T09:00:00Z"},
+  {id:10,type:"Affirmation",text:"I AM the Presence of Healing Light. Every organ, every cell, every atom of my being blazes with the emerald-green fire of God's Healing Light now made manifest.",master:"Hilarion",source:"The Green Ray Teachings",notes:"The Fifth Ray Healing Flame brings healing into the etheric, mental, and physical bodies.",tags:["Healing","Green Ray","Hilarion"],fav:false,flagged:false,created:"2024-05-01T08:00:00Z",modified:"2024-05-01T08:00:00Z"},
+  {id:11,type:"Long Decree",text:"In the Name of the Beloved Mighty Victorious Presence of God, I AM in me, Holy Christ Selves of all mankind, Beloved Archangel Michael, Beloved Lanello, the entire Spirit of the Great White Brotherhood and the World Mother — Blaze your Blue Lightning of Absolute Divine Protection around me now! Seal me from all that is less than God's Perfection in this hour. For I AM that I AM!",master:"Archangel Michael",source:"The Archangels and the Disciples",notes:"Full invocation to Archangel Michael's Blue Lightning, calling in the First Ray and the Great White Brotherhood.",tags:["Protection","Blue Ray","Archangel Michael","Great White Brotherhood"],fav:false,flagged:false,created:"2024-05-10T07:30:00Z",modified:"2024-05-10T07:30:00Z"},
+  {id:12,type:"Quote",text:"The Great Central Sun Magnet is the source of all life, all love, all light in this universe. When you call to it, you call to the very heart of creation itself.",master:"Helios and Vesta",source:"Our Solar Logos",notes:"Helios and Vesta describe the Great Central Sun Magnet as the omnipresent source of all life.",tags:["Great Central Sun","Solar Logos","Helios and Vesta"],fav:false,flagged:false,created:"2024-05-18T10:00:00Z",modified:"2024-05-18T10:00:00Z"}
 ];
 
 /* ═══════════════════════════ STATE ═══════════════════════════ */
@@ -827,14 +860,80 @@ const PALS = {
 };
 
 /* ═══════════════════════════ DATA ═══════════════════════════ */
-function loadData() {
-  try { affs = JSON.parse(localStorage.getItem("a_affs") || "null") || JSON.parse(JSON.stringify(SEED)); } catch(e) { affs = JSON.parse(JSON.stringify(SEED)); }
-  try { const c = JSON.parse(localStorage.getItem("a_cfg") || "null"); if(c) cfg = Object.assign(Object.assign({}, DEFAULT_CFG), c); } catch(e) { cfg = Object.assign({}, DEFAULT_CFG); }
-  try { pls = JSON.parse(localStorage.getItem("a_pls") || "[]"); } catch(e) { pls = []; }
-  affs.forEach(a => { if(!a.playlists) a.playlists = []; if(a.flagged === undefined) a.flagged = false; });
+/* ═══════════════════════════════════════════════════════════════
+   DATA LAYER — Supabase only. No localStorage for data.
+   localStorage is used ONLY for credentials (sbUrl, sbKey).
+═══════════════════════════════════════════════════════════════ */
+async function loadData() {
+  // Detect previewer / sandbox (no network access)
+  const isPreview = !SB_READY || window.location.protocol === "blob:" || window.self !== window.top;
+  if(isPreview) {
+    loadPreviewMode(); return;
+  }
+  setSyncStatus("syncing", "Loading…");
+  try {
+    // Affirmations
+    const rows = await sb.select("adams_affirmations", "order=created_at.asc&limit=10000");
+    affs = (rows||[]).map(r => ({
+      id:r.id, type:r.type, text:r.text, master:r.master||"",
+      source:r.source||"", notes:r.notes||"", tags:r.tags||[],
+      fav:r.fav||false, flagged:r.flagged||false, playlists:r.playlists||[],
+      created:r.created_at, modified:r.modified_at
+    }));
+    affs.forEach(a => { if(!a.playlists) a.playlists=[]; if(a.flagged===undefined) a.flagged=false; });
+
+    // Settings
+    const sets = await sb.select("adams_settings", "user_id=eq.shaun");
+    if(sets && sets.length && sets[0].config && Object.keys(sets[0].config).length) {
+      cfg = Object.assign(Object.assign({}, DEFAULT_CFG), sets[0].config);
+    } else {
+      cfg = Object.assign({}, DEFAULT_CFG);
+      await sb.upsert("adams_settings", {user_id:"shaun", config:cfg, updated_at:new Date().toISOString()});
+    }
+
+    // Playlists
+    const plrows = await sb.select("adams_playlists", "order=created_at.asc");
+    pls = (plrows||[]).map(p => ({id:p.id, name:p.name, items:p.items||[]}));
+
+    // Checklist
+    const chk = await sb.select("adams_daily_checklist", "user_id=eq.shaun");
+    if(chk && chk.length) {
+      const today = getTodayStr();
+      checklistState = chk[0].date===today ? {date:today, checks:chk[0].checks||{}} : {date:today, checks:{}};
+    }
+
+    setSyncStatus("synced");
+    applyAll();
+    renderHome(); renderLib(); updateCounts(); renderPlNav();
+  } catch(e) {
+    console.error("Load error:", e);
+    // Could be CORS in previewer — fall back to preview mode
+    if(e.message && (e.message.includes("fetch") || e.message.includes("Failed") || e.message.includes("network"))) {
+      loadPreviewMode(); return;
+    }
+    setSyncStatus("error", "DB Error — " + e.message);
+    affs = []; pls = []; cfg = Object.assign({}, DEFAULT_CFG);
+    applyAll(); renderHome(); renderLib(); updateCounts();
+  }
 }
+
+function loadPreviewMode() {
+  // Load full seed data for previewing in Claude or local file
+  affs = JSON.parse(JSON.stringify(SEED));
+  cfg = Object.assign({}, DEFAULT_CFG);
+  pls = [];
+  setSyncStatus("preview", "Preview mode");
+  applyAll();
+  renderHome(); renderLib(); updateCounts(); renderPlNav();
+  startHomeRot(); scheduleChecklistReset(); loadChecklist();
+  // Show a subtle banner
+  const banner = document.createElement("div");
+  banner.innerHTML = "Preview mode — data is not saved. Open in a real browser to connect to Supabase.";
+  banner.style.cssText = "position:fixed;top:0;left:0;right:0;background:#2A1F50;color:rgba(200,180,255,.7);text-align:center;font-size:11px;padding:4px;font-family:var(--fm);letter-spacing:.5px;z-index:9999;";
+  document.body.prepend(banner);
+}
+
 function saveData() {
-  localStorage.setItem("a_affs", JSON.stringify(affs));
   if(SB_READY) pushAffsToSupabase();
 }
 async function pushAffsToSupabase() {
@@ -843,34 +942,47 @@ async function pushAffsToSupabase() {
     const rows = affs.map(a => ({
       id:a.id, type:a.type, text:a.text, master:a.master||null,
       source:a.source||null, notes:a.notes||null, tags:a.tags||[],
-      fav:a.fav||false, flagged:a.flagged||false, playlists:a.playlists||[],
+      fav:!!a.fav, flagged:!!a.flagged, playlists:a.playlists||[],
       created_at:a.created, modified_at:a.modified||new Date().toISOString()
     }));
     if(rows.length) await sb.upsert("adams_affirmations", rows);
     setSyncStatus("synced");
-  } catch(e) { console.warn("Aff save error:",e); setSyncStatus("offline"); }
+  } catch(e) { console.error("Aff save error:",e); setSyncStatus("error","Save failed"); }
 }
 
 function saveCfg() {
-  localStorage.setItem("a_cfg", JSON.stringify(cfg));
   if(SB_READY) pushCfgToSupabase();
 }
 async function pushCfgToSupabase() {
   try {
     await sb.upsert("adams_settings", {user_id:"shaun", config:cfg, updated_at:new Date().toISOString()});
-  } catch(e) { console.warn("Settings save error:",e); }
+    setSyncStatus("synced");
+  } catch(e) { console.error("Settings save error:",e); setSyncStatus("error","Settings save failed"); }
 }
 
 function savePls() {
-  localStorage.setItem("a_pls", JSON.stringify(pls));
   if(SB_READY) pushPlsToSupabase();
 }
 async function pushPlsToSupabase() {
   try {
-    if(pls.length) await sb.upsert("adams_playlists", pls.map(p => ({id:p.id, name:p.name, items:p.items||[], created_at:new Date().toISOString()})));
-  } catch(e) { console.warn("Playlist save error:",e); }
+    // Delete removed playlists first, then upsert current ones
+    const existing = await sb.select("adams_playlists","select=id");
+    const existingIds = (existing||[]).map(p=>p.id);
+    const currentIds = pls.map(p=>p.id);
+    for(const id of existingIds) {
+      if(!currentIds.includes(id)) await sb.delete("adams_playlists","id=eq."+id);
+    }
+    if(pls.length) await sb.upsert("adams_playlists", pls.map(p=>({id:p.id,name:p.name,items:p.items||[],created_at:new Date().toISOString()})));
+    setSyncStatus("synced");
+  } catch(e) { console.error("Playlist save error:",e); setSyncStatus("error","Playlist save failed"); }
 }
+
+function saveChecklist() {
+  if(SB_READY) sb.upsert("adams_daily_checklist",{user_id:"shaun",date:checklistState.date,checks:checklistState.checks,updated_at:new Date().toISOString()}).catch(e=>console.error("Checklist error:",e));
+}
+
 function flash(msg) { const el = document.getElementById("flash"); el.textContent = msg || "Saved ✦"; el.classList.add("show"); setTimeout(() => el.classList.remove("show"), 2000); }
+
 
 /* ═══════════════════════════ CLOCK ═══════════════════════════ */
 // Clock removed v1.4
@@ -1515,16 +1627,22 @@ async function testSupabase() {
     txt.textContent = "Connection failed: " + e.message;
   }
 }
-async function pushAllToSupabase() {
-  if(!SB_READY) { flash("Configure Supabase first"); return; }
-  setSyncStatus("syncing"); flash("Pushing all data to Supabase…");
-  try {
-    await pushAffsToSupabase();
-    await pushPlsToSupabase();
-    await pushCfgToSupabase();
-    if(checklistState.date) await sb.upsert("adams_daily_checklist",{user_id:"shaun",date:checklistState.date,checks:checklistState.checks,updated_at:new Date().toISOString()});
-    setSyncStatus("synced"); flash("All data pushed to Supabase ✓");
-  } catch(e) { setSyncStatus("offline"); flash("Push failed: " + e.message); }
+// pushAllToSupabase removed v2.1
+function importSettings(e) {
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      cfg = Object.assign(Object.assign({}, DEFAULT_CFG), imported);
+      saveCfg();
+      applyAll();
+      renderStats(); renderHomeTypePicker(); renderHomeCatPicker(); renderChecklistCatPicker(); renderPlSettings();
+      flash("Settings imported ✦");
+    } catch(err) { flash("Invalid settings file"); }
+  };
+  reader.readAsText(file);
+  e.target.value = ""; // reset so same file can be re-imported
 }
 function exportData() { const blob = new Blob([JSON.stringify(affs,null,2)],{type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "adams_export.json"; a.click(); }
 function exportSettings() { const blob = new Blob([JSON.stringify(cfg,null,2)],{type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "adams_settings.json"; a.click(); }
@@ -1608,7 +1726,7 @@ function scheduleChecklistReset() {
   setTimeout(() => { resetChecklist(); scheduleChecklistReset(); }, midnight - now);
 }
 
-function clearAll() { if(!confirm("Delete ALL affirmations permanently?")) return; if(!confirm("Cannot be undone. Confirm?")) return; affs=[]; saveData(); renderHome(); renderLib(); renderFavs(); renderFlagged(); updateCounts(); flash("All data cleared"); }
+// clearAll removed v2.1
 
 /* ═══════════════════════════ APPLY CFG ═══════════════════════════ */
 function applyAll() {
@@ -1679,19 +1797,18 @@ function applyAll() {
 }
 
 /* ═══════════════════════════ INIT ═══════════════════════════ */
-loadData();
-loadChecklist();
-// Override Supabase constants from saved cfg if present
-if(cfg.sbUrl && cfg.sbUrl !== "YOUR_SUPABASE_URL") {
-  window._SB_URL = cfg.sbUrl; window._SB_KEY = cfg.sbKey||"";
-  SB_READY = true;
-}
+// Apply visual defaults immediately so the page isn't blank
+cfg = Object.assign({}, DEFAULT_CFG);
 applyAll();
-renderHome();
-renderLib();
-updateCounts();
-startHomeRot();
-scheduleChecklistReset();
+// Load everything from Supabase (async) — setSyncStatus is called inside loadData
+loadData().then(() => {
+  startHomeRot();
+  scheduleChecklistReset();
+  loadChecklist();
+}).catch(e => {
+  console.error("Init error:", e);
+  if(typeof setSyncStatus === "function") setSyncStatus("error", "Connection failed");
+});
 </script>
 </body>
 </html>
