@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.D.A.M.S. v1.4</title>
+<title>A.D.A.M.S. v2.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Josefin+Sans:wght@600;700&family=Raleway:wght@700&family=Outfit:wght@700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -87,6 +87,12 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 .page-content{flex:1;padding-bottom:4px;}
 
 /* ══ FLASH ══ */
+.sync-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background .3s;}
+.sync-dot.synced{background:#4CAF78;}
+.sync-dot.syncing{background:#C9A84C;animation:syncpulse .8s infinite;}
+.sync-dot.offline{background:#888;}
+.sync-dot.local{background:#555;}
+@keyframes syncpulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 #flash{position:fixed;top:72px;right:14px;background:rgba(124,111,205,.11);border:1px solid var(--acc-b);color:var(--acc2);padding:5px 13px;border-radius:7px;font-size:11px;font-family:var(--fm);z-index:700;opacity:0;transition:opacity .22s;pointer-events:none;}
 #flash.show{opacity:1;}
 
@@ -124,7 +130,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 .aff-text:focus{background:var(--bg4);border-color:var(--acc);}
 [data-theme="light"] .aff-text:focus{background:#EEEAF8;}
 .aff-author{font-size:12px;color:var(--author-color);margin-top:3px;padding-left:4px;font-style:italic;}
-.aff-author .master-link{cursor:pointer;transition:color .12s;}
+.aff-author .master-link{cursor:pointer;transition:color .12s;text-decoration:none;}
 .aff-author .master-link:hover{color:var(--acc2);text-decoration:underline;}
 .aff-notes{font-size:11.5px;color:var(--muted);margin-top:4px;padding-left:4px;line-height:1.5;font-style:italic;opacity:.8;}
 .aff-tags-row{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;padding-left:4px;}
@@ -165,12 +171,32 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 .pg-info{font-family:var(--fm);font-size:10.5px;color:var(--muted);padding:0 4px;}
 
 /* ══ FOOTER ══ */
-.page-footer{background:var(--footer-bg);border-top:1px solid var(--footer-border);padding:18px 24px;margin-top:24px;margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px;}
+.page-footer{background:var(--footer-bg);border-top:1px solid var(--footer-border);padding:18px 24px;margin-top:24px;}
+/* Full-bleed footer: break out of max-width constraint */
+.page.active > .page-footer{
+  width:100vw;
+  position:relative;
+  left:50%;
+  right:50%;
+  margin-left:-50vw;
+  margin-right:-50vw;
+  padding-left:calc(50vw - 556px);
+  padding-right:calc(50vw - 556px);
+}
+@media(max-width:1208px){
+  .page.active > .page-footer{
+    padding-left:24px;
+    padding-right:24px;
+  }
+}
 .htag-strip-title{font-family:var(--fm);font-size:9px;text-transform:uppercase;letter-spacing:2px;color:rgba(168,159,245,.32);margin-bottom:9px;}
 .htag-strip{display:flex;flex-wrap:wrap;gap:5px;}
 .htag{display:inline-flex;align-items:center;padding:4px 11px;border-radius:99px;font-size:12px;background:rgba(124,111,205,.07);color:rgba(168,159,245,.48);border:1px solid rgba(124,111,205,.14);cursor:pointer;transition:all .11s;font-family:var(--fb);}
 .htag:hover{background:rgba(124,111,205,.16);color:var(--acc2);}
 .htag.on{background:rgba(124,111,205,.18);color:#E8E4F8;border-color:rgba(124,111,205,.35);font-weight:700;}
+.htag-pending{background:rgba(124,111,205,.12);color:var(--acc2);border-color:rgba(124,111,205,.3);border-style:dashed;}
+.htag-uncat{background:rgba(180,130,60,.08);color:#C89040;border-color:rgba(180,130,60,.22);}
+.htag-uncat.on{background:rgba(180,130,60,.2);color:#D4A050;border-color:rgba(180,130,60,.4);font-weight:700;}
 .footer-cd{font-family:var(--fm);font-size:9.5px;color:rgba(168,159,245,.28);margin-top:10px;}
 
 /* ══ SLIDE PANEL ══ */
@@ -198,6 +224,9 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 /* ══ TAG CHIP GRID ══ */
 .tag-selected-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;min-height:26px;}
 .tag-chip-on{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:99px;font-size:11.5px;background:var(--acc3);color:var(--acc2);border:1px solid var(--acc-b);cursor:pointer;transition:all .11s;}
+.tag-chip-uncat{background:rgba(180,130,60,.1);color:#D4A050;border-color:rgba(180,130,60,.25);cursor:default;}
+.tag-grid-uncat{background:rgba(180,130,60,.08);color:#B88030;border-color:rgba(180,130,60,.2);}
+.tag-grid-uncat.on{background:rgba(180,130,60,.2);color:#D4A050;border-color:rgba(180,130,60,.35);}
 .tag-chip-on:hover{background:rgba(200,80,80,.1);color:#E8607A;border-color:rgba(200,80,80,.2);}
 .tag-grid-box{display:flex;flex-wrap:wrap;gap:5px;padding:10px;background:var(--inp);border:1px solid var(--border2);border-radius:8px;max-height:160px;overflow-y:auto;}
 [data-theme="light"] .tag-grid-box{background:#F4F4F6;}
@@ -297,7 +326,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
       <div class="logo-acronym" id="logoAcronym">Ascended Master Database of Affirmations, Quotes &amp; Mantras</div>
     </div>
     <div class="hdr-right">
-      <span class="hdr-ver">v1.4</span>
+      <span class="hdr-ver">v2.0</span>
       <button class="hdr-btn" onclick="openPanel()">+ Add New</button>
       <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
       <button class="hdr-icon" onclick="toggleFS()" title="Fullscreen">⛶</button>
@@ -311,7 +340,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
     <button class="nav-tab" data-page="flagged" onclick="goPage('flagged',this)">Flagged <span class="nbadge" id="flagBadge">0</span></button>
   <button class="nav-tab" data-page="checklist" onclick="goPage('checklist',this)">Daily Checklist</button>
     <button class="nav-tab" data-page="screensaver" style="margin-left:auto;" onclick="openSS()">⊹ Screensaver</button>
-    <button class="nav-tab" data-page="settings" onclick="goPage('settings',this)">⚙ Settings</button>
+    <button class="nav-tab" data-page="adams_settings" onclick="goPage('settings',this)">⚙ Settings</button>
   </nav>
 </div>
 
@@ -322,12 +351,10 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
   <div class="page-content">
     <div class="ptitle-bar">
       <div class="ptitle">Home</div>
-      <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
-        <button class="btn btn-ghost btn-xs" onclick="clearHomeSearch()">✕ Clear</button>
-        <div class="srch"><span class="srch-ico">⌕</span><input type="text" id="homeSearch" placeholder="Search…" oninput="renderHome()"></div>
-        <select class="fsel" id="homeTypeF" onchange="renderHome()"><option value="">All Types</option><option>Affirmation</option><option>Decree</option><option>Long Decree</option><option>Quote</option></select>
-      </div>
     </div>
+    <!-- hidden inputs kept so renderHome() refs don't break -->
+    <input type="hidden" id="homeSearch" value="">
+    <select id="homeTypeF" style="display:none"><option value=""></option></select>
     <div class="home-rot-bar">
       <span id="homeRotInfo" style="letter-spacing:.3px">Rotating by category</span>
       <span class="home-rot-cd" id="homeCountdownTop"></span>
@@ -347,9 +374,9 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
     <div class="ptitle-bar">
       <div class="ptitle" id="libTitle">Library</div>
       <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
-        <div class="srch"><span class="srch-ico">⌕</span><input type="text" id="libSearch" placeholder="Search…" oninput="libPage=1;renderLib()"></div>
-        <select class="fsel" id="libTypeF" onchange="libPage=1;renderLib();updateLibTitle()"><option value="">All Types</option><option>Affirmation</option><option>Decree</option><option>Long Decree</option><option>Quote</option></select>
         <button class="btn btn-ghost btn-xs" id="libClearBtn" onclick="clearLibFilters()" style="display:none">✕ Clear</button>
+        <div class="srch"><span class="srch-ico">⌕</span><input type="text" id="libSearch" placeholder="Search…" oninput="libPage=1;renderLib()"></div>
+        <select class="fsel" id="libTypeF" onchange="libPage=1;renderLib();updateLibTitle()"><option value="">All Types</option><option>Affirmation</option><option>Long Affirmation</option><option>Decree</option><option>Long Decree</option><option>Quote</option><option>Long Quote</option><option>Prayer</option></select>
         <select class="fsel" id="libPgSz" onchange="libPage=1;renderLib()"><option>10</option><option>20</option><option>25</option><option>50</option></select>
       </div>
     </div>
@@ -411,11 +438,6 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
     <div class="settings-wrap">
 
       <div class="s-sec">
-        <div class="s-sec-title">Database Stats</div>
-        <div class="stats-grid" id="statsGrid"></div>
-      </div>
-
-      <div class="s-sec">
         <div class="s-sec-title">Appearance</div>
         <div class="s-row">
           <div><div class="s-label">Default Theme</div><div class="s-sub">Which theme loads on startup</div></div>
@@ -441,27 +463,27 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
         <div class="s-sec-title">Header Customization</div>
         <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px">Logo Font</div>
         <div class="chip-row" id="logoFontRow">
-          <div class="chip sel" style="font-family:'Bebas Neue',cursive;letter-spacing:3px" data-lf="Bebas Neue" onclick="setLogoFont('Bebas Neue',this)">Bebas Neue</div>
+          <div class="chip" style="font-family:'Bebas Neue',cursive;letter-spacing:3px" data-lf="Bebas Neue" onclick="setLogoFont('Bebas Neue',this)">Bebas Neue</div>
           <div class="chip" style="font-family:'Barlow Condensed',sans-serif;font-weight:700" data-lf="Barlow Condensed" onclick="setLogoFont('Barlow Condensed',this)">Barlow Condensed</div>
           <div class="chip" style="font-family:'Josefin Sans',sans-serif;font-weight:700;letter-spacing:3px" data-lf="Josefin Sans" onclick="setLogoFont('Josefin Sans',this)">Josefin Sans</div>
-          <div class="chip" style="font-family:'Raleway',sans-serif;font-weight:700;letter-spacing:3px" data-lf="Raleway" onclick="setLogoFont('Raleway',this)">Raleway</div>
+          <div class="chip sel" style="font-family:'Raleway',sans-serif;font-weight:700;letter-spacing:3px" data-lf="Raleway" onclick="setLogoFont('Raleway',this)">Raleway</div>
           <div class="chip" style="font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:2px" data-lf="Outfit" onclick="setLogoFont('Outfit',this)">Outfit</div>
         </div>
         <div style="margin-top:11px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Logo Size</div>
-          <div class="range-row"><input type="range" min="18" max="54" value="32" id="logoSzR" oninput="setLogoSz(this.value)"><span class="range-val" id="logoSzV">32px</span></div>
+          <div class="range-row"><input type="range" min="18" max="54" value="23" id="logoSzR" oninput="setLogoSz(this.value)"><span class="range-val" id="logoSzV">32px</span></div>
         </div>
         <div style="margin-top:11px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Letter Spacing</div>
-          <div class="range-row"><input type="range" min="0" max="20" value="6" id="logoLsR" oninput="setLogoLs(this.value)"><span class="range-val" id="logoLsV">6px</span></div>
+          <div class="range-row"><input type="range" min="0" max="20" value="0" id="logoLsR" oninput="setLogoLs(this.value)"><span class="range-val" id="logoLsV">6px</span></div>
         </div>
         <div style="margin-top:11px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Header Padding (left &amp; right)</div>
-          <div class="range-row"><input type="range" min="8" max="60" value="22" id="hdrPadR" oninput="setHdrPad(this.value)"><span class="range-val" id="hdrPadV">22px</span></div>
+          <div class="range-row"><input type="range" min="8" max="60" value="20" id="hdrPadR" oninput="setHdrPad(this.value)"><span class="range-val" id="hdrPadV">22px</span></div>
         </div>
         <div style="margin-top:11px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Header Padding (top &amp; bottom)</div>
-          <div class="range-row"><input type="range" min="0" max="30" value="0" id="hdrVPadR" oninput="setHdrVPad(this.value)"><span class="range-val" id="hdrVPadV">0px</span></div>
+          <div class="range-row"><input type="range" min="0" max="30" value="15" id="hdrVPadR" oninput="setHdrVPad(this.value)"><span class="range-val" id="hdrVPadV">0px</span></div>
         </div>
         <div style="margin-top:11px;display:flex;align-items:center;justify-content:space-between;">
           <div><div style="font-size:13px;color:var(--text);font-weight:500">ALL CAPS Title</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Force uppercase on the header title</div></div>
@@ -472,7 +494,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
         </div>
         <div style="margin-top:18px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px">Menu (Nav) Item Size</div>
-          <div class="range-row"><input type="range" min="9" max="18" value="12.5" step="0.5" id="navSzR" oninput="setNavSz(this.value)"><span class="range-val" id="navSzV">12.5px</span></div>
+          <div class="range-row"><input type="range" min="9" max="18" value="13" step="0.5" id="navSzR" oninput="setNavSz(this.value)"><span class="range-val" id="navSzV">12.5px</span></div>
         </div>
         <div style="margin-top:11px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px">Menu Item Color</div>
@@ -496,23 +518,23 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
         <div class="s-sec-title">Typography</div>
         <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px">Body Font</div>
         <div class="chip-row" id="fontRow">
-          <div class="chip sel" style="font-family:'Nunito',sans-serif" data-font="Nunito" onclick="setFont('Nunito',this)">Nunito</div>
-          <div class="chip" style="font-family:'DM Sans',sans-serif" data-font="DM Sans" onclick="setFont('DM Sans',this)">DM Sans</div>
+          <div class="chip" style="font-family:'Nunito',sans-serif" data-font="Nunito" onclick="setFont('Nunito',this)">Nunito</div>
+          <div class="chip sel" style="font-family:'DM Sans',sans-serif" data-font="DM Sans" onclick="setFont('DM Sans',this)">DM Sans</div>
           <div class="chip" style="font-family:'Plus Jakarta Sans',sans-serif" data-font="Plus Jakarta Sans" onclick="setFont('Plus Jakarta Sans',this)">Jakarta</div>
           <div class="chip" style="font-family:'Outfit',sans-serif" data-font="Outfit" onclick="setFont('Outfit',this)">Outfit</div>
           <div class="chip" style="font-family:'Raleway',sans-serif" data-font="Raleway" onclick="setFont('Raleway',this)">Raleway</div>
         </div>
         <div style="margin-top:11px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Font Size</div>
-          <div class="range-row"><input type="range" min="12" max="22" value="15" id="fontSzR" oninput="setFontSz(this.value)"><span class="range-val" id="fontSzV">15px</span></div>
+          <div class="range-row"><input type="range" min="12" max="22" value="17" id="fontSzR" oninput="setFontSz(this.value)"><span class="range-val" id="fontSzV">15px</span></div>
         </div>
         <div style="margin-top:11px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Page Title Padding</div>
-          <div class="range-row"><input type="range" min="4" max="42" value="14" id="titlePadR" oninput="setTitlePad(this.value)"><span class="range-val" id="titlePadV">14px</span></div>
+          <div class="range-row"><input type="range" min="4" max="42" value="23" id="titlePadR" oninput="setTitlePad(this.value)"><span class="range-val" id="titlePadV">14px</span></div>
         </div>
         <div style="margin-top:11px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Page Title Size (Library › Tag label)</div>
-          <div class="range-row"><input type="range" min="10" max="22" value="13" id="ptitleSzR" oninput="setPtitleSz(this.value)"><span class="range-val" id="ptitleSzV">13px</span></div>
+          <div class="range-row"><input type="range" min="10" max="22" value="15" id="ptitleSzR" oninput="setPtitleSz(this.value)"><span class="range-val" id="ptitleSzV">13px</span></div>
         </div>
         <div style="margin-top:11px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Page Title Letter Spacing</div>
@@ -540,11 +562,11 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
         </div>
         <div style="margin-top:9px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Dark Mode Opacity</div>
-          <div class="range-row"><input type="range" min="0" max="30" value="6" id="bgDkR" oninput="setBgOp('dark',this.value)"><span class="range-val" id="bgDkV">6%</span></div>
+          <div class="range-row"><input type="range" min="0" max="30" value="11" id="bgDkR" oninput="setBgOp('dark',this.value)"><span class="range-val" id="bgDkV">6%</span></div>
         </div>
         <div style="margin-top:8px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Light Mode Opacity</div>
-          <div class="range-row"><input type="range" min="0" max="20" value="4" id="bgLtR" oninput="setBgOp('light',this.value)"><span class="range-val" id="bgLtV">4%</span></div>
+          <div class="range-row"><input type="range" min="0" max="20" value="20" id="bgLtR" oninput="setBgOp('light',this.value)"><span class="range-val" id="bgLtV">4%</span></div>
         </div>
       </div>
 
@@ -605,6 +627,11 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
           <select class="fsel" id="homeRotIntSel" onchange="cfg.homeRotInterval=+this.value;saveCfg();resetHomeRot()"><option value="15">15 min</option><option value="30">30 min</option><option value="60" selected>1 hour</option><option value="120">2 hours</option><option value="240">4 hours</option></select>
         </div>
         <div style="margin-top:10px">
+          <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px">Types shown on Home</div>
+          <div style="font-size:12px;color:var(--muted2);margin-bottom:8px">Long types and Prayers are hidden by default. Uncheck to hide a type.</div>
+          <div id="homeTypePicker"></div>
+        </div>
+        <div style="margin-top:14px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:9px">Featured Categories</div>
           <div id="homeCatPicker"></div>
         </div>
@@ -627,8 +654,38 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
       </div>
 
       <div class="s-sec">
+        <div class="s-sec-title">Database Stats</div>
+        <div class="stats-grid" id="statsGrid"></div>
+      </div>
+
+      <div class="s-sec">
+        <div class="s-sec-title">Supabase Connection</div>
+        <div class="s-row">
+          <div><div class="s-label">Status</div><div class="s-sub" id="sbStatusText">Not configured — paste credentials below</div></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div class="sync-dot local" id="sbStatusDot"></div><button class="btn btn-ghost btn-sm" onclick="testSupabase()">Test</button></div>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
+          <div><div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Project URL</div>
+          <input type="text" id="sbUrlInp" placeholder="https://xxxx.supabase.co" value="https://tqpfqotzcynizkrqbnwl.supabase.co" style="width:100%;padding:7px 10px;background:var(--inp);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:var(--fm);font-size:12px;outline:none;" oninput="cfg.sbUrl=this.value"></div>
+          <div><div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Anon Key</div>
+          <input type="text" id="sbKeyInp" placeholder="eyJ…" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcGZxb3R6Y3luaXprcnFibndsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDQyNTIsImV4cCI6MjA5MTA4MDI1Mn0.3kPVj8WJEJrTYf14Wzskt-DtrG1uzHoAx6PUvGvWK2Q" style="width:100%;padding:7px 10px;background:var(--inp);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:var(--fm);font-size:12px;outline:none;" oninput="cfg.sbKey=this.value"></div>
+          <button class="btn btn-acc btn-sm" onclick="saveSupabaseCreds()" style="align-self:flex-start">Save &amp; Connect</button>
+        </div>
+        <div style="margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.6">After connecting, use <b style="color:var(--muted2)">Sync → Push All</b> to upload your local data to Supabase the first time.</div>
+        <div class="s-row" style="margin-top:8px">
+          <div><div class="s-label">Push All Local Data</div><div class="s-sub">Upload everything to Supabase (first-time migration)</div></div>
+          <button class="btn btn-ghost btn-sm" onclick="pushAllToSupabase()">Push All ↑</button>
+        </div>
+        <div class="s-row">
+          <div><div class="s-label">Pull from Supabase</div><div class="s-sub">Overwrite local data with Supabase data</div></div>
+          <button class="btn btn-ghost btn-sm" onclick="syncFromSupabase()">Pull ↓</button>
+        </div>
+      </div>
+
+      <div class="s-sec">
         <div class="s-sec-title">Data</div>
-        <div class="s-row"><div><div class="s-label">Export</div><div class="s-sub">Download all as JSON</div></div><button class="btn btn-ghost btn-sm" onclick="exportData()">Export JSON</button></div>
+        <div class="s-row"><div><div class="s-label">Export Affirmations</div><div class="s-sub">Download all affirmations as JSON</div></div><button class="btn btn-ghost btn-sm" onclick="exportData()">Export JSON</button></div>
+        <div class="s-row"><div><div class="s-label">Export Settings</div><div class="s-sub">Download your current settings as JSON</div></div><button class="btn btn-ghost btn-sm" onclick="exportSettings()">Export Settings</button></div>
         <div class="s-row"><div><div class="s-label">Clear All Data</div><div class="s-sub">Permanently deletes everything</div></div><button class="btn btn-sm" style="background:rgba(200,60,60,.07);color:#C86060;border:1px solid rgba(200,60,60,.15)" onclick="clearAll()">Clear All</button></div>
         <div class="s-row"><div><div class="s-label">Storage Note</div><div class="s-sub">Settings save to localStorage now. When Supabase is connected, all settings and data will persist in the database automatically.</div></div></div>
       </div>
@@ -650,7 +707,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
   </div>
   <div class="panel-body">
     <input type="hidden" id="editId">
-    <div class="field"><label>Type</label><select id="fType"><option>Affirmation</option><option>Decree</option><option>Long Decree</option><option>Quote</option></select></div>
+    <div class="field"><label>Type</label><select id="fType"><option>Affirmation</option><option>Long Affirmation</option><option>Decree</option><option>Long Decree</option><option>Quote</option><option>Long Quote</option><option>Prayer</option></select></div>
     <div class="field"><label>Text *</label><textarea id="fText" placeholder="Enter the affirmation, decree, or quote…" style="min-height:110px"></textarea></div>
     <div class="field"><label>Ascended Master / Speaker</label><input type="text" id="fMaster" placeholder="e.g. Saint Germain, El Morya…"></div>
     <div class="field"><label>Source / Book</label><input type="text" id="fSource" placeholder="e.g. The I AM Discourses, Vol. III"></div>
@@ -698,36 +755,63 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 </div>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════
+   SUPABASE CONFIG — paste your credentials here
+═══════════════════════════════════════════════════════════════ */
+const SUPABASE_URL = "https://tqpfqotzcynizkrqbnwl.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcGZxb3R6Y3luaXprcnFibndsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDQyNTIsImV4cCI6MjA5MTA4MDI1Mn0.3kPVj8WJEJrTYf14Wzskt-DtrG1uzHoAx6PUvGvWK2Q";
+
+// Lightweight Supabase REST client (no npm needed)
+const sb = {
+  _h() { const k=window._SB_KEY||SUPABASE_KEY; return { "Content-Type":"application/json", "apikey":k, "Authorization":"Bearer "+k, "Prefer":"return=representation" }; },
+  async select(table, query="") {
+    const r = await fetch((window._SB_URL||SUPABASE_URL)+"/rest/v1/"+table+"?"+query, {headers:this._h()});
+    if(!r.ok) throw new Error(await r.text());
+    return r.json();
+  },
+  async upsert(table, data) {
+    const r = await fetch((window._SB_URL||SUPABASE_URL)+"/rest/v1/"+table, {method:"POST",headers:{...this._h(),"Prefer":"resolution=merge-duplicates,return=representation"},body:JSON.stringify(data)});
+    if(!r.ok) throw new Error(await r.text());
+    return r.json();
+  },
+  async delete(table, query) {
+    const r = await fetch((window._SB_URL||SUPABASE_URL)+"/rest/v1/"+table+"?"+query, {method:"DELETE",headers:this._h()});
+    if(!r.ok) throw new Error(await r.text());
+    return r.ok;
+  },
+  async update(table, query, data) {
+    const r = await fetch((window._SB_URL||SUPABASE_URL)+"/rest/v1/"+table+"?"+query, {method:"PATCH",headers:{...this._h(),"Prefer":"return=representation"},body:JSON.stringify(data)});
+    if(!r.ok) throw new Error(await r.text());
+    return r.json();
+  }
+};
+
+let SB_READY = true; // credentials baked in
+
+
 /* ═══════════════════════════ SEED ═══════════════════════════ */
 const SEED = [
-  {id:1,type:"Affirmation",text:"I AM the Violet Flame in action in me now! I AM the Violet Flame to Light alone I bow! I AM the Violet Flame in mighty Cosmic Power! I AM the Light of God shining every hour!",master:"Saint Germain",source:"The I AM Discourses",notes:"Invokes the Seventh Ray of transmutation to purify karma and free the soul from all limitation.",tags:["Violet Flame","Purification","Saint Germain"],fav:true,flagged:false,created:"2024-01-15T10:00:00Z",modified:"2024-01-15T10:00:00Z"},
-  {id:2,type:"Decree",text:"In the Name of the Beloved Mighty Victorious Presence of God, I AM in me, I call to the Heart of the Great Central Sun Magnet! Release now the Full Momentum of Divine Love into my world!",master:"Mighty Victory",source:"Pearls of Wisdom, Vol. 12",notes:"Connects directly to the Great Central Sun Magnet, drawing the highest frequencies of cosmic love into the physical world.",tags:["Great Central Sun","Love","Victory"],fav:false,flagged:false,created:"2024-02-01T08:30:00Z",modified:"2024-02-01T08:30:00Z"},
-  {id:3,type:"Affirmation",text:"I AM the Resurrection and the Life of every cell and atom of my being now made manifest.",master:"Jesus the Christ",source:"The Lost Teachings of Jesus",notes:"The Resurrection flame rebuilds and restores every part of the four lower bodies to divine perfection.",tags:["Resurrection","Healing","Christ"],fav:true,flagged:false,created:"2024-02-10T14:00:00Z",modified:"2024-02-10T14:00:00Z"},
-  {id:4,type:"Quote",text:"The Violet Flame is the gift of the Holy Spirit to the people of Earth in this age. Use it freely, use it joyfully, use it with full faith that it will work for you.",master:"Saint Germain",source:"Saint Germain On Prophecy",notes:"The Violet Flame is freely given and available to all who call upon it.",tags:["Violet Flame","Saint Germain"],fav:false,flagged:false,created:"2024-02-14T09:00:00Z",modified:"2024-02-14T09:00:00Z"},
-  {id:5,type:"Decree",text:"Beloved I AM Presence bright, Round me seal your Tube of Light. From Ascended Master Flame, Called forth now in God's own name. Let it keep my temple free, From all discord sent to me.",master:"El Morya",source:"The Chela and the Path",notes:"Erects the Tube of Light — a pillar of divine protection that no discord may penetrate.",tags:["Protection","Tube of Light","El Morya"],fav:false,flagged:false,created:"2024-03-01T07:00:00Z",modified:"2024-03-01T07:00:00Z"},
-  {id:6,type:"Affirmation",text:"I AM the abundance of God made manifest in my life. The supply of the universe flows to me now in perfect, divine order.",master:"Abundance Elohim",source:"Personal Revelation",notes:"Affirms the I AM Presence as the open door to infinite supply on the Yellow Ray of Abundance.",tags:["Abundance","Supply","Yellow Ray"],fav:true,flagged:false,created:"2024-03-15T11:00:00Z",modified:"2024-03-15T11:00:00Z"},
-  {id:7,type:"Long Decree",text:"In the Name of the Beloved Mighty Victorious Presence of God, I AM in me, Holy Christ Selves of all mankind, Beloved Archangel Michael, Beloved Lanello, the entire Spirit of the Great White Brotherhood and the World Mother — Blaze your Blue Lightning of Absolute Divine Protection around me now! Seal me from all that is less than God's Perfection in this hour. For I AM that I AM!",master:"Archangel Michael",source:"The Archangels and the Disciples",notes:"Full invocation to Archangel Michael's Blue Lightning, calling in the First Ray and the Great White Brotherhood.",tags:["Protection","Blue Ray","Archangel Michael","Great White Brotherhood"],fav:false,flagged:false,created:"2024-04-01T06:00:00Z",modified:"2024-04-01T06:00:00Z"},
-  {id:8,type:"Quote",text:"The Honor Flame burns in the heart of every true chela of the Great White Brotherhood. To know honor is to know God.",master:"El Morya",source:"El Morya on Chela and Path",notes:"The Honor Flame on the First Blue Ray is foundational to discipleship under the Hierarchy.",tags:["Honor Flame","El Morya","Blue Ray"],fav:false,flagged:false,created:"2024-04-10T12:00:00Z",modified:"2024-04-10T12:00:00Z"},
-  {id:9,type:"Affirmation",text:"I AM the Pink Flame of Love divine, the Rose of God I AM. I radiate God's Perfect Love to every soul I meet, and every heart responds to the I AM.",master:"Lady Master Venus",source:"Venus and the Love Ray",notes:"Invokes the Third Ray of Divine Love through the Pink Flame as held by Lady Master Venus.",tags:["Pink Ray of Love","Lady Venus","Love"],fav:true,flagged:false,created:"2024-04-20T09:00:00Z",modified:"2024-04-20T09:00:00Z"},
-  {id:10,type:"Affirmation",text:"I AM the Presence of Healing Light. Every organ, every cell, every atom of my being blazes with the emerald-green fire of God's Healing Light now made manifest.",master:"Hilarion",source:"The Green Ray Teachings",notes:"The Fifth Ray Healing Flame brings healing into the etheric, mental, and physical bodies.",tags:["Healing","Green Ray","Hilarion"],fav:false,flagged:false,created:"2024-05-01T08:00:00Z",modified:"2024-05-01T08:00:00Z"},
-  {id:11,type:"Decree",text:"Lord Surya, beloved Cuzco, Mighty Elohim of Peace — Hurl your Cosmic Sword of Peace before me now! Let all discord cease, let harmony increase, and let the Will of God be done through me!",master:"Surya & Cuzco",source:"The Elohim of Peace",notes:"Invokes the Elohim of Peace to dissolve discord in any environment.",tags:["Peace","Harmony","Elohim"],fav:false,flagged:false,created:"2024-05-10T07:30:00Z",modified:"2024-05-10T07:30:00Z"},
-  {id:12,type:"Quote",text:"The Great Central Sun Magnet is the source of all life, all love, all light in this universe. When you call to it, you call to the very heart of creation itself.",master:"Helios and Vesta",source:"Our Solar Logos",notes:"Helios and Vesta describe the Great Central Sun Magnet as the omnipresent source of all life.",tags:["Great Central Sun","Solar Logos","Helios and Vesta"],fav:false,flagged:false,created:"2024-05-18T10:00:00Z",modified:"2024-05-18T10:00:00Z"}
+  {id:1,type:"Affirmation",text:"I AM the Violet Flame in action in me now! I AM the Violet Flame to Light alone I bow! I AM the Violet Flame in mighty Cosmic Power! I AM the Light of God shining every hour!",master:"Saint Germain",source:"The I AM Discourses",notes:"Invokes the Seventh Ray of transmutation to purify karma and free the soul from all limitation.",tags:["Violet Flame","Purification","Saint Germain"],fav:true,flagged:false,created:"2024-01-15T10:00:00Z",modified:"2024-01-15T10:00:00Z"}
 ];
 
 /* ═══════════════════════════ STATE ═══════════════════════════ */
-let affs = [], pls = [], cfg = {
+// DEFAULT_CFG is the factory baseline — never overwritten by localStorage
+const DEFAULT_CFG = {
   theme:"dark", defaultTheme:"dark",
-  font:"Nunito", fontSize:15, titlePad:14, ptitleSize:13,
-  logoFont:"Bebas Neue", logoSize:32, logoLs:6, logoCaps:0, hdrPad:22,
-  hdrColor:"#0A0812", authorColor:"#9A94C0", navColor:"#9A94C0", navSize:12.5, hdrVPad:0,
-  iamColor:"#9B6DFF", sfColor:"#D4882A", ptitleLs:0.8,
+  font:"DM Sans", fontSize:17, titlePad:23, ptitleSize:15, ptitleLs:0.8,
+  logoFont:"Raleway", logoSize:23, logoLs:0, logoCaps:0, hdrPad:20, hdrVPad:15,
+  hdrColor:"#0A0812", authorColor:"#9A94C0", navColor:"#9A94C0", navSize:13,
+  iamColor:"#9B6DFF", sfColor:"#D4882A",
   ssInterval:12, ssBg:"flame", ssImgOp:80, ssImgUrl:"", ssIamColor:"#C4A0FF",
   palette:"indigo",
   homeCats:[], homePerCat:1, homeRotInterval:60,
+  homeTypes:["Affirmation","Decree","Quote"],
   checklistCats:[],
-  bodyBgOn:false, bgDkOp:6, bgLtOp:4, bodyBgUrl:""
+  bodyBgOn:true, bgDkOp:11, bgLtOp:20,
+  bodyBgUrl:"https://wsadams.github.io/ADAMS/purple-fire-flame-effect-on-transparent-background-flames-hot-burn-orange-red-glow-spark-flaming-burning-campfire-png.png"
 };
-let libPage = 1, libTagF = "", libMasterF = "", panelTags = [];
+let affs = [], pls = [], cfg = Object.assign({}, DEFAULT_CFG);
+let libPage = 1, libTagF = "", libTagF2 = "", libTagF3 = "", libMasterF = "", panelTags = [];
 let ssIdx = 0, ssTimer = null, ssCdTimer = null, ssCdSec = 0, ssMouseT = null, ssPaused = false;
 let acActiveField = null;
 let homeRotTimer = null, homeRotSec = 0, homeRotCdTimer = null;
@@ -745,13 +829,47 @@ const PALS = {
 /* ═══════════════════════════ DATA ═══════════════════════════ */
 function loadData() {
   try { affs = JSON.parse(localStorage.getItem("a_affs") || "null") || JSON.parse(JSON.stringify(SEED)); } catch(e) { affs = JSON.parse(JSON.stringify(SEED)); }
-  try { const c = JSON.parse(localStorage.getItem("a_cfg") || "null"); if(c) cfg = Object.assign(cfg, c); } catch(e) {}
+  try { const c = JSON.parse(localStorage.getItem("a_cfg") || "null"); if(c) cfg = Object.assign(Object.assign({}, DEFAULT_CFG), c); } catch(e) { cfg = Object.assign({}, DEFAULT_CFG); }
   try { pls = JSON.parse(localStorage.getItem("a_pls") || "[]"); } catch(e) { pls = []; }
   affs.forEach(a => { if(!a.playlists) a.playlists = []; if(a.flagged === undefined) a.flagged = false; });
 }
-function saveData() { localStorage.setItem("a_affs", JSON.stringify(affs)); }
-function saveCfg()  { localStorage.setItem("a_cfg",  JSON.stringify(cfg));  }
-function savePls()  { localStorage.setItem("a_pls",  JSON.stringify(pls));  }
+function saveData() {
+  localStorage.setItem("a_affs", JSON.stringify(affs));
+  if(SB_READY) pushAffsToSupabase();
+}
+async function pushAffsToSupabase() {
+  setSyncStatus("syncing");
+  try {
+    const rows = affs.map(a => ({
+      id:a.id, type:a.type, text:a.text, master:a.master||null,
+      source:a.source||null, notes:a.notes||null, tags:a.tags||[],
+      fav:a.fav||false, flagged:a.flagged||false, playlists:a.playlists||[],
+      created_at:a.created, modified_at:a.modified||new Date().toISOString()
+    }));
+    if(rows.length) await sb.upsert("adams_affirmations", rows);
+    setSyncStatus("synced");
+  } catch(e) { console.warn("Aff save error:",e); setSyncStatus("offline"); }
+}
+
+function saveCfg() {
+  localStorage.setItem("a_cfg", JSON.stringify(cfg));
+  if(SB_READY) pushCfgToSupabase();
+}
+async function pushCfgToSupabase() {
+  try {
+    await sb.upsert("adams_settings", {user_id:"shaun", config:cfg, updated_at:new Date().toISOString()});
+  } catch(e) { console.warn("Settings save error:",e); }
+}
+
+function savePls() {
+  localStorage.setItem("a_pls", JSON.stringify(pls));
+  if(SB_READY) pushPlsToSupabase();
+}
+async function pushPlsToSupabase() {
+  try {
+    if(pls.length) await sb.upsert("adams_playlists", pls.map(p => ({id:p.id, name:p.name, items:p.items||[], created_at:new Date().toISOString()})));
+  } catch(e) { console.warn("Playlist save error:",e); }
+}
 function flash(msg) { const el = document.getElementById("flash"); el.textContent = msg || "Saved ✦"; el.classList.add("show"); setTimeout(() => el.classList.remove("show"), 2000); }
 
 /* ═══════════════════════════ CLOCK ═══════════════════════════ */
@@ -765,9 +883,9 @@ function toggleFS() { if(!document.fullscreenElement) document.documentElement.r
 /* ═══════════════════════════ HIGHLIGHT ═══════════════════════════ */
 function highlight(text) {
   return esc(text)
-    .replace(/\bI AM\b/g, '<span class="iam">&ldquo;I AM&rdquo;</span>')
-    .replace(/Violet Flame/g, '<span class="iam">Violet Flame</span>')
-    .replace(/Sacred Fire/g, '<span class="sf">Sacred Fire</span>');
+    .replace(/\bI AM\b/gi, '<span class="iam">&ldquo;I AM&rdquo;</span>')
+    .replace(/Violet Flame/gi, '<span class="iam">Violet Flame</span>')
+    .replace(/Sacred Fire/gi, '<span class="sf">Sacred Fire</span>');
 }
 
 /* ═══════════════════════════ THEME ═══════════════════════════ */
@@ -872,7 +990,7 @@ function goPage(id, btn) {
   if(id === "favorites")renderFavs();
   if(id === "flagged")  renderFlagged();
   if(id === "checklist") renderChecklist();
-  if(id === "settings") { renderStats(); renderHomeCatPicker(); renderChecklistCatPicker(); renderPlSettings(); renderPlNav(); }
+  if(id === "adams_settings") { renderStats(); renderHomeCatPicker(); renderChecklistCatPicker(); renderPlSettings(); renderPlNav(); }
   if(id.startsWith("pl-")) renderPlPage(id.replace("pl-",""));
   updateCounts();
 }
@@ -887,7 +1005,7 @@ function buildRow(a, num, opts) {
     : '<button class="row-btn" style="opacity:.25" title="Create playlists first">☰</button>';
   const numHtml  = !opts.noNum ? '<div class="aff-num">' + num + '</div>' : "";
   const noteHtml = a.notes ? '<div class="aff-notes">(&ldquo;' + esc(a.notes) + '&rdquo;)</div>' : "";
-  const masterHtml = a.master ? '<div class="aff-author">— <span onclick="filterByMaster(\'' + esc(a.master) + '\')" title="View all by ' + esc(a.master) + '">' + esc(a.master) + '</span></div>' : '';
+  const masterHtml = a.master ? '<div class="aff-author">— <span class="master-link" onclick="filterByMaster(\''+ esc(a.master) +'\')">' + esc(a.master) + '</span></div>' : '';
   const tagHtml  = a.tags && a.tags.length ? '<div class="aff-tags-row">' + a.tags.map(t => '<span class="aff-tag" onclick="filterByTag(\'' + esc(t) + '\')">#' + esc(t) + '</span>').join("") + '</div>' : "";
   return '<div class="aff-row" data-id="' + a.id + '">' +
     numHtml +
@@ -941,7 +1059,8 @@ function renderHome() {
   const perCat = cfg.homePerCat || 1;
   let html = "";
   cats.forEach(cat => {
-    const pool = affs.filter(a => (a.tags||[]).includes(cat));
+    const allowedTypes = cfg.homeTypes && cfg.homeTypes.length ? cfg.homeTypes : ["Affirmation","Decree","Quote"];
+    const pool = affs.filter(a => (a.tags||[]).includes(cat) && allowedTypes.includes(a.type));
     if(!pool.length) return;
     const picks = [...pool].sort(() => Math.random() - .5).slice(0, Math.min(perCat, pool.length));
     html += '<div class="cat-sec"><div class="cat-sec-label">' + esc(cat) + '</div><div class="aff-list">' + picks.map(p => buildRow(p, null, {noNum:true})).join("") + '</div></div>';
@@ -951,24 +1070,91 @@ function renderHome() {
 }
 
 /* ═══════════════════════════ STRIP ═══════════════════════════ */
+// pendingTags = tags staged in footer before navigating to library
+let pendingTags = [];
+
 function buildStrip(id, activeTag) {
   const el = document.getElementById(id); if(!el) return;
-  const tags = getAllTags(); if(!tags.length) { el.innerHTML = ""; return; }
-  el.innerHTML = tags.map(t => '<span class="htag ' + (activeTag===t?"on":"") + '" onclick="filterByTag(\'' + esc(t) + '\')">#' + esc(t) + '</span>').join("") +
-    (activeTag ? '<span class="htag" style="opacity:.5;font-style:italic" onclick="clearTagF()">✕ Clear</span>' : "");
+  const tags = getAllTags();
+  const allTags = [...tags, "(Uncategorized)"];
+  if(!tags.length && !allTags.length) { el.innerHTML = ""; return; }
+  const activeTags = [libTagF, libTagF2, libTagF3].filter(Boolean);
+  let pendingBar = "";
+  if(pendingTags.length) {
+    const tagList = pendingTags.map(t => '<span style="background:var(--acc3);color:var(--acc2);padding:2px 8px;border-radius:99px;font-size:11.5px;border:1px solid var(--acc-b)">' + esc(t) + '</span>').join(' <span style="color:var(--muted);font-size:10px">+</span> ');
+    pendingBar = '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--footer-border)">'
+      + '<span style="font-family:var(--fm);font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(168,159,245,.4)">Filter by:</span> '
+      + tagList
+      + ' <button onclick="applyPendingTags()" style="padding:3px 12px;border-radius:6px;background:var(--acc);color:#fff;border:none;cursor:pointer;font-size:11.5px;font-family:var(--fb);margin-left:4px">View Results</button>'
+      + ' <button onclick="clearPendingTags()" style="padding:3px 10px;border-radius:6px;background:transparent;color:var(--muted2);border:1px solid var(--border2);cursor:pointer;font-size:11.5px;font-family:var(--fb)">✕</button>'
+      + '</div>';
+  }
+  const tagHtml = allTags.map(t => {
+    const isActive = activeTags.includes(t);
+    const isPending = pendingTags.includes(t);
+    const isUncat = t === "(Uncategorized)";
+    let cls = "htag" + (isActive?" on":"") + (isPending&&!isActive?" htag-pending":"") + (isUncat?" htag-uncat":"");
+    const label = isUncat ? "(Uncategorized)" : "#" + esc(t);
+    const tick = isPending ? " ✓" : "";
+    return '<span class="' + cls + '" onclick="footerTagClick(\'' + esc(t) + '\')" title="' + (isPending?"Remove from selection":"Click to filter, or pick multiple then View Results") + '">' + label + tick + '</span>';
+  }).join("");
+  const clearHtml = (activeTags.length || pendingTags.length) ? '<span class="htag" style="opacity:.5;font-style:italic;margin-left:4px" onclick="clearTagF()">✕ Clear all</span>' : "";
+  el.innerHTML = pendingBar + tagHtml + clearHtml;
 }
-function filterByTag(tag) { libTagF = tag; libMasterF = ""; libPage = 1; goPage("library", document.querySelector("[data-page=library]")); }
-function filterByMaster(master) { libMasterF = master; libTagF = ""; libPage = 1; goPage("library", document.querySelector("[data-page=library]")); }
-function clearTagF() { libTagF = ""; libMasterF = ""; renderLib(); }
+function footerTagClick(tag) {
+  const activeTags = [libTagF, libTagF2, libTagF3].filter(Boolean);
+  // Clicking an already-active tag clears everything
+  if(activeTags.includes(tag)) { clearTagF(); return; }
+  // Toggle in pending list
+  if(pendingTags.includes(tag)) {
+    pendingTags = pendingTags.filter(t => t !== tag);
+  } else {
+    if(tag === "(Uncategorized)") pendingTags = ["(Uncategorized)"];
+    else { pendingTags = pendingTags.filter(t => t !== "(Uncategorized)"); if(pendingTags.length < 3) pendingTags.push(tag); }
+  }
+  // If pending is now empty, just re-render strip with no filter
+  if(pendingTags.length === 0) {
+    const pg = document.querySelector(".page.active");
+    const stripMap = {"page-home":"homeStrip","page-library":"libStrip","page-favorites":"favStrip","page-flagged":"flagStrip"};
+    buildStrip(stripMap[pg?.id] || "libStrip", libTagF);
+    return;
+  }
+  // Always apply immediately — no "View Results" needed for single tag
+  // For multiple tags, also apply immediately and stay on/go to library
+  applyPendingTags();
+}
+function applyPendingTags() {
+  if(!pendingTags.length) return;
+  libTagF = pendingTags[0]||""; libTagF2 = pendingTags[1]||""; libTagF3 = pendingTags[2]||"";
+  libMasterF = ""; libPage = 1; pendingTags = [];
+  const libTab = document.querySelector("[data-page=library]");
+  // If already on library, just re-render; otherwise navigate
+  const activePage = document.querySelector(".page.active");
+  if(activePage && activePage.id === "page-library") {
+    renderLib();
+  } else {
+    goPage("library", libTab);
+  }
+}
+function clearPendingTags() {
+  pendingTags = [];
+  const pg = document.querySelector(".page.active");
+  const stripMap = {"page-home":"homeStrip","page-library":"libStrip","page-favorites":"favStrip","page-flagged":"flagStrip"};
+  buildStrip(stripMap[pg?.id] || "libStrip", libTagF);
+}
+function filterByTag(tag) { pendingTags=[]; libTagF=tag; libTagF2=""; libTagF3=""; libMasterF=""; libPage=1; goPage("library",document.querySelector("[data-page=library]")); }
+function filterByMaster(master) { pendingTags=[]; libMasterF=master; libTagF=""; libTagF2=""; libTagF3=""; libPage=1; goPage("library",document.querySelector("[data-page=library]")); }
+function clearTagF() { pendingTags=[]; libTagF=""; libTagF2=""; libTagF3=""; libMasterF=""; renderLib(); }
 function clearHomeSearch() { const s=document.getElementById("homeSearch"); const t=document.getElementById("homeTypeF"); if(s)s.value=""; if(t)t.value=""; renderHome(); }
-function clearLibFilters() { const s=document.getElementById("libSearch"); const t=document.getElementById("libTypeF"); if(s)s.value=""; if(t)t.value=""; libTagF=""; libMasterF=""; libPage=1; renderLib(); }
+function clearLibFilters() { pendingTags=[]; const s=document.getElementById("libSearch"); const t=document.getElementById("libTypeF"); if(s)s.value=""; if(t)t.value=""; libTagF=""; libTagF2=""; libTagF3=""; libMasterF=""; libPage=1; renderLib(); }
 function updateLibTitle() {
   const typeF = (document.getElementById("libTypeF")||{value:""}).value;
   const el = document.getElementById("libTitle"); if(!el) return;
   let t = "Library";
   if(libMasterF) t += ' <span class="ptitle-crumb">› ' + esc(libMasterF) + '</span>';
-  if(libTagF)    t += ' <span class="ptitle-crumb">› ' + esc(libTagF) + '</span>';
-  if(typeF)      t += ' <span class="ptitle-crumb">› ' + esc(typeF) + '</span>';
+  const activeTags = [libTagF, libTagF2, libTagF3].filter(Boolean);
+  if(activeTags.length) t += ' <span class="ptitle-crumb">› ' + activeTags.map(esc).join(' + ') + '</span>';
+  if(typeF) t += ' <span class="ptitle-crumb">› ' + esc(typeF) + '</span>';
   el.innerHTML = t;
 }
 
@@ -981,10 +1167,15 @@ function renderLib() {
   if(search)    list = list.filter(a => a.text.toLowerCase().includes(search) || (a.master||"").toLowerCase().includes(search) || (a.source||"").toLowerCase().includes(search) || (a.tags||[]).some(t=>t.toLowerCase().includes(search)));
   if(typeF)     list = list.filter(a => a.type === typeF);
   if(libMasterF)list = list.filter(a => a.master === libMasterF);
-  if(libTagF)   list = list.filter(a => (a.tags||[]).includes(libTagF));
+  if(libTagF)   list = list.filter(a => {
+    const tags = a.tags||[];
+    const hasTags = tags.length > 0;
+    const check = (t) => t === "(Uncategorized)" ? !hasTags : tags.includes(t);
+    return check(libTagF) && (!libTagF2 || check(libTagF2)) && (!libTagF3 || check(libTagF3));
+  });
   list.sort((a,b) => new Date(b.created) - new Date(a.created));
   // Show/hide clear button
-  const hasFilters = search || typeF || libTagF || libMasterF;
+  const hasFilters = search || typeF || libTagF || libTagF2 || libTagF3 || libMasterF;
   const clrBtn = document.getElementById("libClearBtn");
   if(clrBtn) clrBtn.style.display = hasFilters ? "" : "none";
   const pgSz = +(document.getElementById("libPgSz")||{value:10}).value || 10;
@@ -992,7 +1183,7 @@ function renderLib() {
   const slice = list.slice((libPage-1)*pgSz, libPage*pgSz);
   document.getElementById("libList").innerHTML = slice.length ? slice.map((a,i) => buildRow(a,(libPage-1)*pgSz+i+1)).join("") : '<div class="empty-state"><div class="empty-ico">✦</div><div class="empty-txt">No affirmations found.</div></div>';
   document.getElementById("libPag").innerHTML = buildPag(total, libPage, pgSz);
-  buildStrip("libStrip", libTagF);
+  buildStrip("libStrip", libTagF);  // activeTag used for single-tag on state
 }
 function buildPag(total, page, pgSz) {
   if(total <= pgSz) return "";
@@ -1067,7 +1258,9 @@ function delAff(id) {
   if(!confirm("Remove this affirmation?")) return;
   affs = affs.filter(x => x.id !== id);
   pls.forEach(pl => { pl.items = pl.items.filter(i => i !== id); });
-  saveData(); savePls(); renderHome(); renderLib(); renderFavs(); renderFlagged(); updateCounts(); flash("Removed");
+  localStorage.setItem("a_affs", JSON.stringify(affs));
+  if(SB_READY) sb.delete("adams_affirmations","id=eq."+id).catch(e=>console.warn("Delete error:",e));
+  savePls(); renderHome(); renderLib(); renderFavs(); renderFlagged(); updateCounts(); flash("Removed");
 }
 
 /* ═══════════════════════════ PANEL ═══════════════════════════ */
@@ -1116,13 +1309,30 @@ function saveAff() {
 const PRESET_TAGS = ["Violet Flame","Pink Ray of Love","Abundance","Supply","Honor Flame","Great Central Sun","Protection","Healing","Blue Ray","Yellow Ray","Green Ray","Love","Peace","Resurrection","Purification","Saint Germain","El Morya","Archangel Michael","Hilarion","Lady Venus","Christ"];
 function renderTagGrid() {
   const sel = document.getElementById("tagSelRow");
-  sel.innerHTML = panelTags.length
-    ? panelTags.map((t,i) => '<span class="tag-chip-on" onclick="removeTag(' + i + ')" title="Click to remove">' + esc(t) + ' ✕</span>').join("")
-    : '<span style="font-size:11.5px;color:var(--muted);font-style:italic">None selected</span>';
+  if(panelTags.length) {
+    sel.innerHTML = panelTags.map((t,i) => {
+      if(t === "(Uncategorized)") return '<span class="tag-chip-on tag-chip-uncat" title="Cannot be combined with other tags">' + esc(t) + '</span>';
+      return '<span class="tag-chip-on" onclick="removeTag(' + i + ')" title="Click to remove">' + esc(t) + ' ✕</span>';
+    }).join("");
+  } else {
+    sel.innerHTML = '<span style="font-size:11.5px;color:var(--muted);font-style:italic">None selected</span>';
+  }
   const all = [...new Set([...PRESET_TAGS, ...getAllTags()])].sort();
-  document.getElementById("tagGridBox").innerHTML = all.map(t => '<span class="tag-grid-chip ' + (panelTags.includes(t)?"on":"") + '" onclick="togglePanelTag(\'' + esc(t) + '\')">' + esc(t) + '</span>').join("");
+  const regChips = all.map(t => '<span class="tag-grid-chip ' + (panelTags.includes(t)?"on":"") + '" onclick="togglePanelTag(\'' + esc(t) + '\')">' + esc(t) + '</span>').join("");
+  const uncatOn = panelTags.includes("(Uncategorized)");
+  const uncatChip = '<span class="tag-grid-chip tag-grid-uncat ' + (uncatOn?"on":"") + '" onclick="toggleUncatTag()" title="Assign to Uncategorized — cannot combine with other tags">(Uncategorized)</span>';
+  document.getElementById("tagGridBox").innerHTML = regChips + uncatChip;
 }
-function togglePanelTag(tag) { if(panelTags.includes(tag)) panelTags = panelTags.filter(t=>t!==tag); else panelTags.push(tag); renderTagGrid(); }
+function toggleUncatTag() {
+  if(panelTags.includes("(Uncategorized)")) panelTags = panelTags.filter(t => t !== "(Uncategorized)");
+  else panelTags = ["(Uncategorized)"];
+  renderTagGrid();
+}
+function togglePanelTag(tag) {
+  if(panelTags.includes(tag)) panelTags = panelTags.filter(t => t !== tag);
+  else { panelTags = panelTags.filter(t => t !== "(Uncategorized)"); panelTags.push(tag); }
+  renderTagGrid();
+}
 function removeTag(i) { panelTags.splice(i,1); renderTagGrid(); }
 function addNewTag() {
   const inp = document.getElementById("tagNewInp");
@@ -1172,6 +1382,25 @@ function initAC() {
 }
 
 /* ═══════════════════════════ HOME CATS ═══════════════════════════ */
+function renderHomeTypePicker() {
+  const el = document.getElementById("homeTypePicker"); if(!el) return;
+  const allTypes = ["Affirmation","Long Affirmation","Decree","Long Decree","Quote","Long Quote","Prayer"];
+  const selected = cfg.homeTypes || ["Affirmation","Decree","Quote"];
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:7px;">' + allTypes.map(t => {
+    const on = selected.includes(t);
+    const isLong = t.startsWith("Long") || t === "Prayer";
+    return '<label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13px;">'
+      + '<input type="checkbox" ' + (on?"checked":"") + ' onchange="toggleHomeType(\'' + t + '\',this.checked)" style="accent-color:var(--acc);width:14px;height:14px;">'
+      + t + (isLong ? ' <span style="font-size:10px;color:var(--muted);margin-left:4px">(hidden by default)</span>' : '')
+      + '</label>';
+  }).join("") + '</div>';
+}
+function toggleHomeType(type, on) {
+  let types = cfg.homeTypes || ["Affirmation","Decree","Quote"];
+  if(on && !types.includes(type)) types = [...types, type];
+  else if(!on) types = types.filter(t => t !== type);
+  cfg.homeTypes = types; saveCfg(); renderHomeTypePicker(); renderHome();
+}
 function renderHomeCatPicker() {
   const all = getAllTags(); const sel = cfg.homeCats || [];
   if(!all.length) { document.getElementById("homeCatPicker").innerHTML = '<div style="font-size:12.5px;color:var(--muted);font-style:italic">No tags yet.</div>'; return; }
@@ -1261,7 +1490,44 @@ function setHdrPad(v)      { cfg.hdrPad = +v; document.documentElement.style.set
 function setLogoCaps(v)    { cfg.logoCaps = v; document.documentElement.dataset.logoCaps = v; document.getElementById("capsOn").classList.toggle("sel", v===1); document.getElementById("capsOff").classList.toggle("sel", v===0); saveCfg(); }
 function setSsIamColor(v)  { cfg.ssIamColor = v; document.documentElement.style.setProperty("--ss-iam", v); const el=document.getElementById("ssIamColorVal"); if(el)el.textContent=v; saveCfg(); }
 function resetSsIamColor() { document.getElementById("ssIamColorPick").value="#C4A0FF"; setSsIamColor("#C4A0FF"); }
+function saveSupabaseCreds() {
+  const url = document.getElementById("sbUrlInp").value.trim();
+  const key = document.getElementById("sbKeyInp").value.trim();
+  if(!url || !key) { flash("Please enter both URL and Key"); return; }
+  cfg.sbUrl = url; cfg.sbKey = key;
+  // Reload the page so SUPABASE_URL and KEY constants pick up from cfg
+  // (We store in cfg and read on load)
+  localStorage.setItem("a_cfg", JSON.stringify(cfg));
+  flash("Credentials saved — reloading…");
+  setTimeout(() => location.reload(), 1200);
+}
+async function testSupabase() {
+  const dot = document.getElementById("sbStatusDot");
+  const txt = document.getElementById("sbStatusText");
+  if(!SB_READY) { txt.textContent = "Not configured — paste URL and key above"; return; }
+  txt.textContent = "Testing…";
+  try {
+    await sb.select("adams_affirmations","limit=1");
+    if(dot) dot.className = "sync-dot synced";
+    txt.textContent = "Connected ✓";
+  } catch(e) {
+    if(dot) dot.className = "sync-dot offline";
+    txt.textContent = "Connection failed: " + e.message;
+  }
+}
+async function pushAllToSupabase() {
+  if(!SB_READY) { flash("Configure Supabase first"); return; }
+  setSyncStatus("syncing"); flash("Pushing all data to Supabase…");
+  try {
+    await pushAffsToSupabase();
+    await pushPlsToSupabase();
+    await pushCfgToSupabase();
+    if(checklistState.date) await sb.upsert("adams_daily_checklist",{user_id:"shaun",date:checklistState.date,checks:checklistState.checks,updated_at:new Date().toISOString()});
+    setSyncStatus("synced"); flash("All data pushed to Supabase ✓");
+  } catch(e) { setSyncStatus("offline"); flash("Push failed: " + e.message); }
+}
 function exportData() { const blob = new Blob([JSON.stringify(affs,null,2)],{type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "adams_export.json"; a.click(); }
+function exportSettings() { const blob = new Blob([JSON.stringify(cfg,null,2)],{type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "adams_settings.json"; a.click(); }
 /* ═══════════════════════════ DAILY CHECKLIST ═══════════════════════════ */
 function getTodayStr() { return new Date().toLocaleDateString("en-CA"); }
 function loadChecklist() {
@@ -1270,7 +1536,10 @@ function loadChecklist() {
   const today = getTodayStr();
   if(checklistState.date !== today) { checklistState = { date:today, checks:{} }; saveChecklist(); }
 }
-function saveChecklist() { localStorage.setItem("a_chk", JSON.stringify(checklistState)); }
+function saveChecklist() {
+  localStorage.setItem("a_chk", JSON.stringify(checklistState));
+  if(SB_READY) sb.upsert("adams_daily_checklist",{user_id:"shaun",date:checklistState.date,checks:checklistState.checks,updated_at:new Date().toISOString()}).catch(e=>console.warn("Checklist sync error:",e));
+}
 function resetChecklist() { checklistState = { date:getTodayStr(), checks:{} }; saveChecklist(); renderChecklist(); flash("Checklist reset"); }
 function renderChecklist() {
   const cats = cfg.checklistCats || [];
@@ -1292,7 +1561,6 @@ function renderChecklist() {
     html += '<div class="chk-row" onclick="toggleCheck(\''+ esc(cat) +'\')">'
       + '<div class="chk-box '+ (checked?"chk-done":"") +'">' + (checked?"✓":"") + '</div>'
       + '<div class="chk-label '+ (checked?"chk-label-done":"") +'">' + esc(cat) + '</div>'
-      + '<div class="chk-count">'+ cnt +' item'+(cnt!==1?"s":"")+'</div>'
       + '</div>';
   });
   html += "</div>";
@@ -1405,11 +1673,19 @@ function applyAll() {
   setPalRaw(cfg.palette || "indigo");
   applyBodyBg();
   renderPlNav();
+  // Update Supabase input fields if set
+  const sbU=document.getElementById("sbUrlInp"); if(sbU&&cfg.sbUrl)sbU.value=cfg.sbUrl||"";
+  const sbK=document.getElementById("sbKeyInp"); if(sbK&&cfg.sbKey)sbK.value=cfg.sbKey||"";
 }
 
 /* ═══════════════════════════ INIT ═══════════════════════════ */
 loadData();
 loadChecklist();
+// Override Supabase constants from saved cfg if present
+if(cfg.sbUrl && cfg.sbUrl !== "YOUR_SUPABASE_URL") {
+  window._SB_URL = cfg.sbUrl; window._SB_KEY = cfg.sbKey||"";
+  SB_READY = true;
+}
 applyAll();
 renderHome();
 renderLib();
