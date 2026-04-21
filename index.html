@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.D.A.M.S. v2.1.1</title>
+<title>A.D.A.M.S. v2.1.2</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Josefin+Sans:wght@600;700&family=Raleway:wght@700&family=Outfit:wght@700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -340,7 +340,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
       <div class="logo-acronym" id="logoAcronym">Ascended Master Database of Affirmations, Quotes &amp; Mantras</div>
     </div>
     <div class="hdr-right">
-      <span class="hdr-ver">v2.1.1</span>
+      <span class="hdr-ver">v2.1.2</span>
       <button class="hdr-btn" onclick="openPanel()">+ Add New</button>
       <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
       <button class="hdr-icon" onclick="toggleFS()" title="Fullscreen">⛶</button>
@@ -1082,7 +1082,7 @@ function applyBodyBg() {
   if(!cfg.bodyBgOn || !cfg.bodyBgUrl) { el.style.opacity = 0; el.style.backgroundImage = "none"; return; }
   const url = cfg.bodyBgUrl.trim();
   el.style.backgroundImage = "url('" + url + "')";
-  const op = (cfg.theme === "dark" ? (cfg.bgDkOp || 6) : (cfg.bgLtOp || 4)) / 100;
+  const op = (cfg.theme === "dark" ? (cfg.bgDkOp ?? 6) : (cfg.bgLtOp ?? 4)) / 100;
   // Force repaint
   el.style.opacity = 0;
   requestAnimationFrame(() => { el.style.opacity = op; });
@@ -1160,7 +1160,7 @@ function buildRow(a, num, opts) {
 /* ═══════════════════════════ HOME ROTATION ═══════════════════════════ */
 function startHomeRot() {
   clearTimeout(homeRotTimer); clearInterval(homeRotCdTimer);
-  homeRotSec = (cfg.homeRotInterval || 60) * 60;
+  homeRotSec = (cfg.homeRotInterval ?? 60) * 60;
   updateHomeCd();
   homeRotCdTimer = setInterval(() => { homeRotSec = Math.max(0, homeRotSec - 1); updateHomeCd(); }, 1000);
   homeRotTimer = setTimeout(() => { renderHome(); startHomeRot(); }, homeRotSec * 1000);
@@ -1191,7 +1191,7 @@ function renderHome() {
     container.innerHTML = '<div class="empty-state"><div class="empty-ico">✦</div><div class="empty-txt">No categories selected for Home.<br><br>Go to Settings → Home Page to choose which categories appear here.</div></div>';
     buildStrip("homeStrip", ""); return;
   }
-  const perCat = cfg.homePerCat || 1;
+  const perCat = cfg.homePerCat ?? 1;
   let html = "";
   cats.forEach(cat => {
     const allowedTypes = cfg.homeTypes && cfg.homeTypes.length ? cfg.homeTypes : ["Affirmation","Decree","Quote"];
@@ -1755,57 +1755,57 @@ function scheduleChecklistReset() {
 function applyAll() {
   document.documentElement.dataset.theme = cfg.theme || "dark";
   document.getElementById("themeBtn").textContent = cfg.theme === "dark" ? "☀ Light" : "🌙 Dark";
-  document.documentElement.style.setProperty("--fs",        (cfg.fontSize  || 15)  + "px");
+  document.documentElement.style.setProperty("--fs",        (cfg.fontSize  ?? 15)  + "px");
   document.documentElement.style.setProperty("--fb",        '"' + (cfg.font || "Nunito") + '",sans-serif');
-  document.documentElement.style.setProperty("--title-pad", (cfg.titlePad  || 14)  + "px");
+  document.documentElement.style.setProperty("--title-pad", (cfg.titlePad  ?? 14)  + "px");
   document.documentElement.style.setProperty("--fh",        '"' + (cfg.logoFont || "Bebas Neue") + '",sans-serif');
-  document.documentElement.style.setProperty("--logo-size", (cfg.logoSize  || 32)  + "px");
-  document.documentElement.style.setProperty("--logo-ls",   (cfg.logoLs    || 6)   + "px");
-  document.documentElement.style.setProperty("--sub-size",  (cfg.subSize   || 9)   + "px");
+  document.documentElement.style.setProperty("--logo-size", (cfg.logoSize  ?? 32)  + "px");
+  document.documentElement.style.setProperty("--logo-ls",   (cfg.logoLs    ?? 6)   + "px");
+  document.documentElement.style.setProperty("--sub-size",  (cfg.subSize   ?? 9)   + "px");
   document.documentElement.style.setProperty("--hdr-bg",    cfg.hdrColor || "#0A0812");
   const sv = (id,v) => { const el=document.getElementById(id); if(el) el.value=v; };
   const st = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
-  sv("fontSzR",cfg.fontSize||15);     st("fontSzV",(cfg.fontSize||15)+"px");
-  sv("titlePadR",cfg.titlePad||14);   st("titlePadV",(cfg.titlePad||14)+"px");
-  sv("logoSzR",cfg.logoSize||32);     st("logoSzV",(cfg.logoSize||32)+"px");
-  sv("logoLsR",cfg.logoLs||6);        st("logoLsV",(cfg.logoLs||6)+"px");
-  sv("subSzR",cfg.subSize||9);        st("subSzV",(cfg.subSize||9)+"px");
+  sv("fontSzR",cfg.fontSize??15);     st("fontSzV",(cfg.fontSize??15)+"px");
+  sv("titlePadR",cfg.titlePad??14);   st("titlePadV",(cfg.titlePad??14)+"px");
+  sv("logoSzR",cfg.logoSize??32);     st("logoSzV",(cfg.logoSize??32)+"px");
+  sv("logoLsR",cfg.logoLs??6);        st("logoLsV",(cfg.logoLs??6)+"px");
+  sv("subSzR",cfg.subSize??9);        st("subSzV",(cfg.subSize??9)+"px");
   sv("ssIntSel",cfg.ssInterval||12);
-  sv("ssImgOpR",cfg.ssImgOp||80);     st("ssImgOpV",(cfg.ssImgOp||80)+"%");
-  sv("bgDkR",cfg.bgDkOp||6);          st("bgDkV",(cfg.bgDkOp||6)+"%");
-  sv("bgLtR",cfg.bgLtOp||4);          st("bgLtV",(cfg.bgLtOp||4)+"%");
-  sv("homePerCatSel",cfg.homePerCat||1);
-  sv("homeRotIntSel",cfg.homeRotInterval||60);
+  sv("ssImgOpR",cfg.ssImgOp??80);     st("ssImgOpV",(cfg.ssImgOp??80)+"%");
+  sv("bgDkR",cfg.bgDkOp??6);          st("bgDkV",(cfg.bgDkOp??6)+"%");
+  sv("bgLtR",cfg.bgLtOp??4);          st("bgLtV",(cfg.bgLtOp??4)+"%");
+  sv("homePerCatSel",cfg.homePerCat??1);
+  sv("homeRotIntSel",cfg.homeRotInterval??60);
   const hcp = document.getElementById("hdrColorPick"); if(hcp) hcp.value = cfg.hdrColor || "#0A0812";
   st("hdrColorVal", cfg.hdrColor || "#0A0812");
   const bgu = document.getElementById("bgUrlInp"); if(bgu) bgu.value = cfg.bodyBgUrl || "";
   const ssu = document.getElementById("ssImgUrlInp"); if(ssu) ssu.value = cfg.ssImgUrl || "";
   const btn = document.getElementById("bgToggleBtn"); if(btn) btn.textContent = cfg.bodyBgOn ? "Disable" : "Enable";
   const sub = document.getElementById("bgToggleSub"); if(sub) sub.textContent = cfg.bodyBgOn ? "Currently on" : "Currently off — paste a URL below to use an image";
-  sv("ptitleSzR",cfg.ptitleSize||13);       st("ptitleSzV",(cfg.ptitleSize||13)+"px");
-  sv("ptitleLsR",cfg.ptitleLs||0.8);       st("ptitleLsV",(cfg.ptitleLs||0.8)+"px");
-  sv("hdrPadR",cfg.hdrPad||22);             st("hdrPadV",(cfg.hdrPad||22)+"px");
-  sv("hdrVPadR",cfg.hdrVPad||0);            st("hdrVPadV",(cfg.hdrVPad||0)+"px");
-  sv("navSzR",cfg.navSize||12.5);           st("navSzV",(cfg.navSize||12.5)+"px");
+  sv("ptitleSzR",cfg.ptitleSize??13);       st("ptitleSzV",(cfg.ptitleSize??13)+"px");
+  sv("ptitleLsR",cfg.ptitleLs??0.8);       st("ptitleLsV",(cfg.ptitleLs??0.8)+"px");
+  sv("hdrPadR",cfg.hdrPad??22);             st("hdrPadV",(cfg.hdrPad??22)+"px");
+  sv("hdrVPadR",cfg.hdrVPad??0);            st("hdrVPadV",(cfg.hdrVPad??0)+"px");
+  sv("navSzR",cfg.navSize??12.5);           st("navSzV",(cfg.navSize??12.5)+"px");
   const ncp=document.getElementById("navColorPick");    if(ncp)ncp.value=cfg.navColor||"#9A94C0";     st("navColorVal",cfg.navColor||"#9A94C0");
   const icp=document.getElementById("iamColorPick");    if(icp)icp.value=cfg.iamColor||"#9B6DFF";    st("iamColorVal",cfg.iamColor||"#9B6DFF");
   const sfp=document.getElementById("sfColorPick");     if(sfp)sfp.value=cfg.sfColor||"#D4882A";     st("sfColorVal",cfg.sfColor||"#D4882A");
   const acp=document.getElementById("authorColorPick"); if(acp)acp.value=cfg.authorColor||"#9A94C0"; st("authorColorVal",cfg.authorColor||"#9A94C0");
   const ssp=document.getElementById("ssIamColorPick");  if(ssp)ssp.value=cfg.ssIamColor||"#C4A0FF";  st("ssIamColorVal",cfg.ssIamColor||"#C4A0FF");
-  document.documentElement.style.setProperty("--ptitle-size",(cfg.ptitleSize||13)+"px");
-  document.documentElement.style.setProperty("--ptitle-ls",(cfg.ptitleLs||0.8)+"px");
-  document.documentElement.style.setProperty("--hdr-top-pad",(cfg.hdrVPad||0)+"px");
-  document.documentElement.style.setProperty("--hdr-bot-pad",(cfg.hdrVPad||0)+"px");
-  document.documentElement.style.setProperty("--nav-item-size",(cfg.navSize||12.5)+"px");
+  document.documentElement.style.setProperty("--ptitle-size",(cfg.ptitleSize??13)+"px");
+  document.documentElement.style.setProperty("--ptitle-ls",(cfg.ptitleLs??0.8)+"px");
+  document.documentElement.style.setProperty("--hdr-top-pad",(cfg.hdrVPad??0)+"px");
+  document.documentElement.style.setProperty("--hdr-bot-pad",(cfg.hdrVPad??0)+"px");
+  document.documentElement.style.setProperty("--nav-item-size",(cfg.navSize??12.5)+"px");
   document.documentElement.style.setProperty("--nav-item-color",cfg.navColor||"rgba(168,159,245,.4)");
   document.documentElement.style.setProperty("--vw",cfg.iamColor||"#9B6DFF");
   document.documentElement.style.setProperty("--sf-color",cfg.sfColor||"#D4882A");
   document.documentElement.style.setProperty("--author-color",cfg.authorColor||"#9A94C0");
-  document.documentElement.style.setProperty("--hdr-pad",(cfg.hdrPad||22)+"px");
+  document.documentElement.style.setProperty("--hdr-pad",(cfg.hdrPad??22)+"px");
   document.documentElement.style.setProperty("--ss-iam",cfg.ssIamColor||"#C4A0FF");
-  document.documentElement.dataset.logoCaps = cfg.logoCaps||0;
-  document.getElementById("capsOn")?.classList.toggle("sel",  (cfg.logoCaps||0)===1);
-  document.getElementById("capsOff")?.classList.toggle("sel", (cfg.logoCaps||0)===0);
+  document.documentElement.dataset.logoCaps = cfg.logoCaps ?? 0;
+  document.getElementById("capsOn")?.classList.toggle("sel",  (cfg.logoCaps ?? 0)===1);
+  document.getElementById("capsOff")?.classList.toggle("sel", (cfg.logoCaps ?? 0)===0);
   document.querySelectorAll("[data-font]").forEach(c => c.classList.toggle("sel", c.dataset.font === cfg.font));
   document.querySelectorAll("[data-bg]").forEach(c => c.classList.toggle("sel", c.dataset.bg === (cfg.ssBg||"flame")));
   document.querySelectorAll("[data-lf]").forEach(c => c.classList.toggle("sel", c.dataset.lf === cfg.logoFont));
