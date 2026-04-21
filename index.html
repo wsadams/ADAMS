@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.D.A.M.S. v2.1</title>
+<title>A.D.A.M.S. v2.1.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Josefin+Sans:wght@600;700&family=Raleway:wght@700&family=Outfit:wght@700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -340,7 +340,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
       <div class="logo-acronym" id="logoAcronym">Ascended Master Database of Affirmations, Quotes &amp; Mantras</div>
     </div>
     <div class="hdr-right">
-      <span class="hdr-ver">v2.1</span>
+      <span class="hdr-ver">v2.1.1</span>
       <button class="hdr-btn" onclick="openPanel()">+ Add New</button>
       <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
       <button class="hdr-icon" onclick="toggleFS()" title="Fullscreen">⛶</button>
@@ -800,6 +800,7 @@ const sb = {
 };
 
 let SB_READY = true; // credentials baked in
+let _initialLoadDone = false;
 
 function setSyncStatus(state, detail) {
   const dot = document.getElementById("syncDot");
@@ -903,7 +904,12 @@ async function loadData() {
     }
 
     setSyncStatus("synced");
-    applyAll();
+    // Only apply settings on the very first load.
+    // Subsequent calls (e.g. after a save) should not overwrite live UI state.
+    if(!_initialLoadDone) {
+      _initialLoadDone = true;
+      applyAll();
+    }
     renderHome(); renderLib(); updateCounts(); renderPlNav();
   } catch(e) {
     console.error("Load error:", e);
@@ -950,14 +956,31 @@ async function pushAffsToSupabase() {
   } catch(e) { console.error("Aff save error:",e); setSyncStatus("error","Save failed"); }
 }
 
+let _cfgSaveTimer = null;
 function saveCfg() {
-  if(SB_READY) pushCfgToSupabase();
+  // Debounce: wait 800ms after last change before writing to Supabase.
+  // This prevents racing writes when sliders fire continuously during drag.
+  setSyncStatus("syncing", "Saving…");
+  clearTimeout(_cfgSaveTimer);
+  _cfgSaveTimer = setTimeout(() => pushCfgToSupabase(), 800);
 }
 async function pushCfgToSupabase() {
+  if(!SB_READY) return;
   try {
-    await sb.upsert("adams_settings", {user_id:"shaun", config:cfg, updated_at:new Date().toISOString()});
+    // Snapshot cfg at the moment of write to avoid race conditions
+    const snapshot = JSON.parse(JSON.stringify(cfg));
+    const result = await sb.upsert("adams_settings", {
+      user_id: "shaun",
+      config: snapshot,
+      updated_at: new Date().toISOString()
+    });
     setSyncStatus("synced");
-  } catch(e) { console.error("Settings save error:",e); setSyncStatus("error","Settings save failed"); }
+    flash("Settings saved ✓");
+    console.log("Settings saved to Supabase ✓", Object.keys(snapshot).length, "keys");
+  } catch(e) {
+    console.error("Settings save error:", e);
+    setSyncStatus("error", "Settings save failed");
+  }
 }
 
 function savePls() {
