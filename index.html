@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.D.A.M.S. v2.1.5</title>
+<title>A.D.A.M.S. v2.1.8</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Josefin+Sans:wght@600;700&family=Raleway:wght@700&family=Outfit:wght@700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -136,21 +136,15 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 .aff-author .master-link{cursor:pointer;transition:color .12s;text-decoration:none;}
 .aff-author .master-link:hover{color:var(--acc2);text-decoration:underline;}
 .aff-notes{font-size:11.5px;color:var(--muted);margin-top:4px;padding-left:4px;line-height:1.5;font-style:italic;opacity:.8;}
-.aff-text-quote{
-  color:#8878C8;
-  font-style:italic;
-}
+.aff-text-quote{color:#8878C8;font-style:italic;}
 [data-theme="light"] .aff-text-quote{color:#5A4A9A;}
-.aff-quote-mark{
-  font-family:Georgia,serif;
-  font-size:2.2em;
-  line-height:0;
-  vertical-align:-0.5em;
-  color:#7060B8;
-  opacity:0.6;
-  user-select:none;
+.aff-quote-wrap{position:relative;padding-left:22px;}
+.aff-quote-open{
+  position:absolute;left:0;top:0;
+  font-family:Georgia,serif;font-size:2.2em;line-height:0.75;
+  color:#7060B8;opacity:0.45;user-select:none;pointer-events:none;
 }
-[data-theme="light"] .aff-quote-mark{color:#5A4A9A;}
+[data-theme="light"] .aff-quote-open{color:#5A4A9A;}
 .aff-tags-row{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;padding-left:4px;}
 .aff-tag{display:inline-block;padding:1px 8px;border-radius:99px;font-size:10.5px;background:var(--bg3);color:var(--muted2);border:1px solid var(--border);cursor:pointer;transition:all .11s;}
 .aff-tag:hover{background:var(--acc3);color:var(--acc2);border-color:var(--acc-b);}
@@ -358,7 +352,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
       <div class="logo-acronym" id="logoAcronym">Ascended Master Database of Affirmations, Quotes &amp; Mantras</div>
     </div>
     <div class="hdr-right">
-      <span class="hdr-ver">v2.1.5</span>
+      <span class="hdr-ver">v2.1.8</span>
       <button class="hdr-btn" onclick="openPanel()">+ Add New</button>
       <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
       <button class="hdr-icon" onclick="toggleFS()" title="Fullscreen">⛶</button>
@@ -1178,11 +1172,11 @@ function buildRow(a, num, opts) {
       (function(){
         const isQ = a.type === "Quote" || a.type === "Long Quote";
         if(isQ) {
-          return '<div class="aff-text aff-text-quote" contenteditable="true" onblur="inlineSave(' + a.id + ',this)" spellcheck="false">' +
-            '<span class="aff-quote-mark">“</span>' +
+          return '<div class="aff-quote-wrap">' +
+            '<span class="aff-quote-open">“</span>' +
+            '<div class="aff-text aff-text-quote" contenteditable="true" onblur="inlineSave(' + a.id + ',this)" spellcheck="false">' +
             highlight(a.text) +
-            '<span class="aff-quote-mark">”</span>' +
-            '</div>';
+            '</div></div>';
         }
         return '<div class="aff-text" contenteditable="true" onblur="inlineSave(' + a.id + ',this)" spellcheck="false">' + highlight(a.text) + '</div>';
       })() +
