@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.D.A.M.S. v2.1.8</title>
+<title>A.D.A.M.S. v2.2.2</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Josefin+Sans:wght@600;700&family=Raleway:wght@700&family=Outfit:wght@700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -16,6 +16,7 @@
   --logo-size:32px; --logo-ls:6px;
   --author-color:#9A94C0;
   --body-ls:0px;
+  --body-lh:1.6;
   --sf-color:#D4882A;
   --nav-item-color:rgba(168,159,245,.4); --nav-item-size:12.5px;
   --hdr-top-pad:0px; --hdr-bot-pad:0px;
@@ -39,7 +40,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;font-size:var(--fs);line-height:1.6;letter-spacing:var(--body-ls);transition:background .2s,color .2s;}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;font-size:var(--fs);line-height:var(--body-lh);letter-spacing:var(--body-ls);transition:background .2s,color .2s;}
 #body-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity .3s;}
 main,#flash,.slide-panel,.panel-overlay{position:relative;z-index:1;}
 ::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:99px;}
@@ -215,6 +216,23 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 
 /* ══ SLIDE PANEL ══ */
 .panel-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.42);backdrop-filter:blur(2px);z-index:800;}
+/* Quick Font Settings panel */
+#qsPanel{position:fixed;top:0;right:-42%;width:40%;min-width:280px;max-width:480px;height:100vh;background:var(--bg2);border-left:1px solid var(--border2);z-index:850;transition:right .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden;}
+[data-theme="light"] #qsPanel{background:#fff;}
+#qsPanel.open{right:0;}
+.qs-hdr{padding:14px 18px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--hdr-bg);}
+.qs-title{font-family:var(--fb);font-size:13px;font-weight:600;color:rgba(220,215,255,.85);letter-spacing:.3px;}
+.qs-close{background:none;border:none;cursor:pointer;font-size:16px;color:rgba(168,159,245,.6);padding:2px 5px;border-radius:4px;transition:color .11s;}
+.qs-close:hover{color:#fff;}
+.qs-body{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:16px;}
+.qs-sec{display:flex;flex-direction:column;gap:8px;}
+.qs-sec-title{font-family:var(--fm);font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--border);}
+.qs-row{display:flex;flex-direction:column;gap:4px;}
+.qs-label{font-size:11.5px;color:var(--muted2);font-family:var(--fm);letter-spacing:.3px;}
+.qs-chip-row{display:flex;gap:4px;flex-wrap:wrap;}
+.qs-chip{padding:4px 11px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer;font-size:12px;font-family:var(--fb);transition:all .11s;color:var(--text2);}
+.qs-chip.sel,.qs-chip:hover{border-color:var(--acc-b);background:var(--acc3);color:var(--acc2);}
+[data-theme="light"] .qs-chip{background:var(--bg4);}
 .panel-overlay.open{display:block;}
 .slide-panel{position:fixed;top:0;right:-520px;width:490px;max-width:96vw;height:100vh;background:var(--bg2);border-left:1px solid var(--border2);z-index:900;transition:right .27s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden;}
 [data-theme="light"] .slide-panel{background:#fff;}
@@ -352,7 +370,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
       <div class="logo-acronym" id="logoAcronym">Ascended Master Database of Affirmations, Quotes &amp; Mantras</div>
     </div>
     <div class="hdr-right">
-      <span class="hdr-ver">v2.1.8</span>
+      <span class="hdr-ver">v2.2.2</span>
       <button class="hdr-btn" onclick="openPanel()">+ Add New</button>
       <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
       <button class="hdr-icon" onclick="toggleFS()" title="Fullscreen">⛶</button>
@@ -367,6 +385,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
   <button class="nav-tab" data-page="checklist" onclick="goPage('checklist',this)">Daily Checklist</button>
     <button class="nav-tab" data-page="screensaver" style="margin-left:auto;" onclick="openSS()">⊹ Screensaver</button>
     <button class="nav-tab" data-page="adams_settings" onclick="goPage('settings',this)">⚙ Settings</button>
+    <button id="qsNavBtn" onclick="toggleQS()" title="Font Settings" style="background:none;border:1px solid rgba(124,111,205,.28);border-radius:6px;margin:auto 0 auto 6px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--acc2);font-size:16px;transition:all .15s;flex-shrink:0;">⚙</button>
   </nav>
 </div>
 
@@ -391,6 +410,8 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
     <div id="homeContent"></div>
   </div>
   <div class="page-footer">
+    <div class="htag-strip-title">Browse by Type</div>
+    <div class="htag-strip" id="homeTypeStrip" style="margin-bottom:12px"></div>
     <div class="htag-strip-title">Browse by Tag</div>
     <div class="htag-strip" id="homeStrip"></div>
     <div class="footer-cd" id="homeCountdownBot"></div>
@@ -416,6 +437,8 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
     <div id="libPag"></div>
   </div>
   <div class="page-footer">
+    <div class="htag-strip-title">Browse by Type</div>
+    <div class="htag-strip" id="libTypeStrip" style="margin-bottom:12px"></div>
     <div class="htag-strip-title">Browse by Tag</div>
     <div class="htag-strip" id="libStrip"></div>
   </div>
@@ -767,6 +790,73 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
   </div>
 </div>
 
+<!-- QUICK FONT SETTINGS PANEL -->
+<div id="qsPanel">
+  <div class="qs-hdr">
+    <span class="qs-title">⚙ Font Settings</span>
+    <button class="qs-close" onclick="closeQS()">✕</button>
+  </div>
+  <div class="qs-body">
+    <div class="qs-sec">
+      <div class="qs-sec-title">Body Font</div>
+      <div class="qs-row">
+        <div class="qs-label">Family</div>
+        <div class="qs-chip-row">
+          <div class="qs-chip" style="font-family:'Nunito',sans-serif" data-qfont="Nunito" onclick="setFont('Nunito',null);syncQSFontChips()">Nunito</div>
+          <div class="qs-chip sel" style="font-family:'DM Sans',sans-serif" data-qfont="DM Sans" onclick="setFont('DM Sans',null);syncQSFontChips()">DM Sans</div>
+          <div class="qs-chip" style="font-family:'Plus Jakarta Sans',sans-serif" data-qfont="Plus Jakarta Sans" onclick="setFont('Plus Jakarta Sans',null);syncQSFontChips()">Jakarta</div>
+          <div class="qs-chip" style="font-family:'Outfit',sans-serif" data-qfont="Outfit" onclick="setFont('Outfit',null);syncQSFontChips()">Outfit</div>
+          <div class="qs-chip" style="font-family:'Raleway',sans-serif" data-qfont="Raleway" onclick="setFont('Raleway',null);syncQSFontChips()">Raleway</div>
+        </div>
+      </div>
+      <div class="qs-row">
+        <div class="qs-label">Size — <span id="qsFontSzV">17px</span></div>
+        <input type="range" min="12" max="22" value="17" id="qsFontSzR" oninput="setFontSz(this.value);document.getElementById('qsFontSzV').textContent=this.value+'px'" style="accent-color:var(--acc);width:100%">
+      </div>
+      <div class="qs-row">
+        <div class="qs-label">Letter Spacing — <span id="qsBodyLsV">0px</span></div>
+        <input type="range" min="0" max="5" step="0.1" value="0" id="qsBodyLsR" oninput="setBodyLs(this.value);document.getElementById('qsBodyLsV').textContent=this.value+'px'" style="accent-color:var(--acc);width:100%">
+      </div>
+      <div class="qs-row">
+        <div class="qs-label">Line Height — <span id="qsBodyLhV">1.6</span></div>
+        <input type="range" min="1" max="3" step="0.05" value="1.6" id="qsBodyLhR" oninput="setBodyLh(this.value);document.getElementById('qsBodyLhV').textContent=this.value" style="accent-color:var(--acc);width:100%">
+      </div>
+    </div>
+    <div class="qs-sec">
+      <div class="qs-sec-title">Logo / Header Title</div>
+      <div class="qs-row">
+        <div class="qs-label">Font</div>
+        <div class="qs-chip-row">
+          <div class="qs-chip" style="font-family:'Bebas Neue',cursive;letter-spacing:2px" data-qlf="Bebas Neue" onclick="setLogoFont('Bebas Neue',null);syncQSLogoChips()">Bebas</div>
+          <div class="qs-chip sel" style="font-family:'Raleway',sans-serif;font-weight:700" data-qlf="Raleway" onclick="setLogoFont('Raleway',null);syncQSLogoChips()">Raleway</div>
+          <div class="qs-chip" style="font-family:'Barlow Condensed',sans-serif;font-weight:700" data-qlf="Barlow Condensed" onclick="setLogoFont('Barlow Condensed',null);syncQSLogoChips()">Barlow</div>
+          <div class="qs-chip" style="font-family:'Josefin Sans',sans-serif;font-weight:700" data-qlf="Josefin Sans" onclick="setLogoFont('Josefin Sans',null);syncQSLogoChips()">Josefin</div>
+          <div class="qs-chip" style="font-family:'Outfit',sans-serif;font-weight:700" data-qlf="Outfit" onclick="setLogoFont('Outfit',null);syncQSLogoChips()">Outfit</div>
+        </div>
+      </div>
+      <div class="qs-row">
+        <div class="qs-label">Size — <span id="qsLogoSzV">23px</span></div>
+        <input type="range" min="18" max="54" value="23" id="qsLogoSzR" oninput="setLogoSz(this.value);document.getElementById('qsLogoSzV').textContent=this.value+'px'" style="accent-color:var(--acc);width:100%">
+      </div>
+      <div class="qs-row">
+        <div class="qs-label">Letter Spacing — <span id="qsLogoLsV">0px</span></div>
+        <input type="range" min="0" max="20" value="0" id="qsLogoLsR" oninput="setLogoLs(this.value);document.getElementById('qsLogoLsV').textContent=this.value+'px'" style="accent-color:var(--acc);width:100%">
+      </div>
+    </div>
+    <div class="qs-sec">
+      <div class="qs-sec-title">Page Title</div>
+      <div class="qs-row">
+        <div class="qs-label">Size — <span id="qsPtitleSzV">15px</span></div>
+        <input type="range" min="10" max="22" value="15" id="qsPtitleSzR" oninput="setPtitleSz(this.value);document.getElementById('qsPtitleSzV').textContent=this.value+'px'" style="accent-color:var(--acc);width:100%">
+      </div>
+      <div class="qs-row">
+        <div class="qs-label">Letter Spacing — <span id="qsPtitleLsV">0.8px</span></div>
+        <input type="range" min="0" max="8" step="0.5" value="0.8" id="qsPtitleLsR" oninput="setPtitleLs(this.value);document.getElementById('qsPtitleLsV').textContent=this.value+'px'" style="accent-color:var(--acc);width:100%">
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- SCREENSAVER -->
 <div id="ss-ov" onmousemove="ssAct()">
   <div id="ss-bg-s"></div>
@@ -855,7 +945,7 @@ const SEED = [
 // DEFAULT_CFG is the factory baseline — never overwritten by localStorage
 const DEFAULT_CFG = {
   theme:"dark", defaultTheme:"dark",
-  font:"DM Sans", fontSize:17, bodyLs:0, titlePad:23, ptitleSize:15, ptitleLs:0.8,
+  font:"DM Sans", fontSize:17, bodyLs:0, bodyLh:1.6, titlePad:23, ptitleSize:15, ptitleLs:0.8,
   logoFont:"Raleway", logoSize:23, logoLs:0, logoCaps:0, hdrPad:20, hdrVPad:15,
   hdrColor:"#0A0812", authorColor:"#9A94C0", navColor:"#9A94C0", navSize:13,
   iamColor:"#9B6DFF", sfColor:"#D4882A",
@@ -1087,6 +1177,7 @@ function resetHdrColor(){ document.getElementById("hdrColorPick").value = "#0A08
 
 /* ═══════════════════════════ FONT ═══════════════════════════ */
 function setFont(f, el)  { cfg.font = f; document.documentElement.style.setProperty("--fb", '"' + f + '",sans-serif'); document.querySelectorAll("[data-font]").forEach(c => c.classList.toggle("sel", c.dataset.font === f)); saveCfg(); }
+function setBodyLh(v)    { cfg.bodyLh = +v; document.documentElement.style.setProperty("--body-lh", v); document.getElementById("bodyLhV") && (document.getElementById("bodyLhV").textContent = v); saveCfg(); }
 function setBodyLs(v)    { cfg.bodyLs = +v; document.documentElement.style.setProperty("--body-ls", v+"px"); document.getElementById("bodyLsV").textContent = v+"px"; saveCfg(); }
 function setFontSz(v)    { cfg.fontSize = +v; document.documentElement.style.setProperty("--fs", v+"px"); document.getElementById("fontSzV").textContent = v+"px"; saveCfg(); }
 function setTitlePad(v)  { cfg.titlePad = +v; document.documentElement.style.setProperty("--title-pad", v+"px"); document.getElementById("titlePadV").textContent = v+"px"; saveCfg(); }
@@ -1153,7 +1244,11 @@ function goPage(id, btn) {
   if(id.startsWith("pl-")) renderPlPage(id.replace("pl-",""));
   updateCounts();
 }
-document.addEventListener("keydown", e => { if(e.key === "Escape") { closeSS(); closePanel(); } });
+document.addEventListener("keydown", e => { if(e.key === "Escape") { closeSS(); closePanel(); closeQS(); } });
+document.addEventListener("click", e => {
+  const panel = document.getElementById("qsPanel");
+  if(panel && panel.classList.contains("open") && !panel.contains(e.target) && !e.target.closest('#qsNavBtn')) closeQS();
+});
 document.addEventListener("click", e => { if(!e.target.closest(".pl-wrap")) document.querySelectorAll(".pl-drop").forEach(d => d.classList.remove("open")); });
 
 /* ═══════════════════════════ BUILD ROW ═══════════════════════════ */
@@ -1219,12 +1314,15 @@ function renderHome() {
     if(typeF)  list = list.filter(a => a.type === typeF);
     list.sort((a,b) => new Date(b.created) - new Date(a.created));
     container.innerHTML = list.length ? '<div class="aff-list">' + list.map((a,i) => buildRow(a,i+1)).join("") + '</div>' : '<div class="empty-state"><div class="empty-ico">✦</div><div class="empty-txt">No results.</div></div>';
-    buildStrip("homeStrip", ""); return;
+    buildStrip("homeStrip", "");
+  buildTypeStrip("homeTypeStrip", "home");
+  buildTypeStrip("homeTypeStrip", "home"); return;
   }
   const cats = cfg.homeCats || [];
   if(!cats.length) {
     container.innerHTML = '<div class="empty-state"><div class="empty-ico">✦</div><div class="empty-txt">No categories selected for Home.<br><br>Go to Settings → Home Page to choose which categories appear here.</div></div>';
-    buildStrip("homeStrip", ""); return;
+    buildStrip("homeStrip", "");
+  buildTypeStrip("homeTypeStrip", "home"); return;
   }
   const perCat = cfg.homePerCat ?? 1;
   let html = "";
@@ -1237,12 +1335,37 @@ function renderHome() {
   });
   container.innerHTML = html || '<div class="empty-state"><div class="empty-ico">✦</div><div class="empty-txt">No affirmations found for selected categories.</div></div>';
   buildStrip("homeStrip", "");
+  buildTypeStrip("homeTypeStrip", "home");
 }
 
 /* ═══════════════════════════ STRIP ═══════════════════════════ */
 // pendingTags = tags staged in footer before navigating to library
 let pendingTags = [];
 
+function buildTypeStrip(stripId, activePage) {
+  const el = document.getElementById(stripId); if(!el) return;
+  const allTypes = ["Affirmation","Long Affirmation","Decree","Long Decree","Quote","Long Quote","Prayer"];
+  // Only show types that exist in the data
+  const usedTypes = [...new Set(affs.map(a => a.type))].sort();
+  if(!usedTypes.length) { el.innerHTML = ""; return; }
+  const currentTypeF = (document.getElementById("libTypeF")||{value:""}).value;
+  el.innerHTML = usedTypes.map(t => {
+    const isActive = currentTypeF === t;
+    return '<span class="htag ' + (isActive?"on":"") + '" onclick="filterByType(\'' + esc(t) + '\')" title="Filter by ' + esc(t) + '">' + esc(t) + '</span>';
+  }).join("") + (currentTypeF ? '<span class="htag" style="opacity:.5;font-style:italic" onclick="clearTypeF()">✕ Clear</span>' : "");
+}
+function filterByType(type) {
+  // Set the type filter on library and navigate
+  libPage = 1;
+  const sel = document.getElementById("libTypeF");
+  if(sel) sel.value = type;
+  goPage("library", document.querySelector("[data-page=library]"));
+}
+function clearTypeF() {
+  const sel = document.getElementById("libTypeF");
+  if(sel) sel.value = "";
+  libPage = 1; renderLib();
+}
 function buildStrip(id, activeTag) {
   const el = document.getElementById(id); if(!el) return;
   const tags = getAllTags();
@@ -1334,6 +1457,8 @@ function renderLib() {
   const search  = (document.getElementById("libSearch")  || {value:""}).value.trim().toLowerCase();
   const typeF   = (document.getElementById("libTypeF")   || {value:""}).value;
   let list = [...affs];
+  // Long Quote hidden unless explicitly selected via type filter or search
+  if(!typeF && !search) list = list.filter(a => a.type !== "Long Quote");
   if(search)    list = list.filter(a => a.text.toLowerCase().includes(search) || (a.master||"").toLowerCase().includes(search) || (a.source||"").toLowerCase().includes(search) || (a.tags||[]).some(t=>t.toLowerCase().includes(search)));
   if(typeF)     list = list.filter(a => a.type === typeF);
   if(libMasterF)list = list.filter(a => a.master === libMasterF);
@@ -1354,6 +1479,7 @@ function renderLib() {
   document.getElementById("libList").innerHTML = slice.length ? slice.map((a,i) => buildRow(a,(libPage-1)*pgSz+i+1)).join("") : '<div class="empty-state"><div class="empty-ico">✦</div><div class="empty-txt">No affirmations found.</div></div>';
   document.getElementById("libPag").innerHTML = buildPag(total, libPage, pgSz);
   buildStrip("libStrip", libTagF);  // activeTag used for single-tag on state
+  buildTypeStrip("libTypeStrip", "library");
 }
 function buildPag(total, page, pgSz) {
   if(total <= pgSz) return "";
@@ -1685,6 +1811,33 @@ async function testSupabase() {
   }
 }
 // pushAllToSupabase removed v2.1
+/* ═══ QUICK FONT SETTINGS PANEL ═══ */
+function toggleQS() {
+  const panel = document.getElementById("qsPanel");
+  panel.classList.toggle("open");
+  if(panel.classList.contains("open")) syncQSValues();
+}
+function closeQS() { document.getElementById("qsPanel").classList.remove("open"); }
+function syncQSValues() {
+  // Sync all slider values from current cfg
+  const sv = (id,v) => { const el=document.getElementById(id); if(el) el.value=v; };
+  const st = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  sv("qsFontSzR", cfg.fontSize??15);       st("qsFontSzV", (cfg.fontSize??15)+"px");
+  sv("qsBodyLsR", cfg.bodyLs??0);          st("qsBodyLsV", (cfg.bodyLs??0)+"px");
+  sv("qsBodyLhR", cfg.bodyLh??1.6);        st("qsBodyLhV", cfg.bodyLh??1.6);
+  sv("qsLogoSzR", cfg.logoSize??23);       st("qsLogoSzV", (cfg.logoSize??23)+"px");
+  sv("qsLogoLsR", cfg.logoLs??0);          st("qsLogoLsV", (cfg.logoLs??0)+"px");
+  sv("qsPtitleSzR", cfg.ptitleSize??15);   st("qsPtitleSzV", (cfg.ptitleSize??15)+"px");
+  sv("qsPtitleLsR", cfg.ptitleLs??0.8);    st("qsPtitleLsV", (cfg.ptitleLs??0.8)+"px");
+  syncQSFontChips(); syncQSLogoChips();
+}
+function syncQSFontChips() {
+  document.querySelectorAll("[data-qfont]").forEach(c => c.classList.toggle("sel", c.dataset.qfont === cfg.font));
+}
+function syncQSLogoChips() {
+  document.querySelectorAll("[data-qlf]").forEach(c => c.classList.toggle("sel", c.dataset.qlf === cfg.logoFont));
+}
+
 /* ═══ COPY TO CLIPBOARD ═══ */
 function copyAff(id, btn) {
   const a = affs.find(x => x.id === id); if(!a) return;
@@ -1843,6 +1996,7 @@ function applyAll() {
   document.getElementById("themeBtn").textContent = cfg.theme === "dark" ? "☀ Light" : "🌙 Dark";
   document.documentElement.style.setProperty("--fs",        (cfg.fontSize  ?? 15)  + "px");
   document.documentElement.style.setProperty("--body-ls",    (cfg.bodyLs    ?? 0)   + "px");
+  document.documentElement.style.setProperty("--body-lh",    cfg.bodyLh    ?? 1.6);
   document.documentElement.style.setProperty("--fb",        '"' + (cfg.font || "Nunito") + '",sans-serif');
   document.documentElement.style.setProperty("--title-pad", (cfg.titlePad  ?? 14)  + "px");
   document.documentElement.style.setProperty("--fh",        '"' + (cfg.logoFont || "Bebas Neue") + '",sans-serif');
@@ -1854,6 +2008,7 @@ function applyAll() {
   const st = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
   sv("fontSzR",cfg.fontSize??15);     st("fontSzV",(cfg.fontSize??15)+"px");
   sv("bodyLsR",cfg.bodyLs??0);          st("bodyLsV",(cfg.bodyLs??0)+"px");
+  sv("bodyLhR",cfg.bodyLh??1.6);         st("bodyLhV",cfg.bodyLh??1.6);
   sv("titlePadR",cfg.titlePad??14);   st("titlePadV",(cfg.titlePad??14)+"px");
   sv("logoSzR",cfg.logoSize??32);     st("logoSzV",(cfg.logoSize??32)+"px");
   sv("logoLsR",cfg.logoLs??6);        st("logoLsV",(cfg.logoLs??6)+"px");
