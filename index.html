@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.D.A.M.S. v2.3.3</title>
+<title>A.D.A.M.S. v2.3.4</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Josefin+Sans:wght@600;700&family=Raleway:wght@700&family=Outfit:wght@700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -44,6 +44,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
+html,body{overflow-x:hidden;}
 body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;font-size:var(--fs);line-height:var(--body-lh);letter-spacing:var(--body-ls);transition:background .2s,color .2s;}
 #body-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity .3s;}
 main,#flash,.slide-panel,.panel-overlay{position:relative;z-index:1;}
@@ -400,7 +401,7 @@ main{padding:0 var(--content-pad) 0;max-width:1160px;margin:0 auto;}
       <div class="logo-sub" id="logoSub">Ascended Master Database of Affirmations, Quotes &amp; Mantras</div>
     </div>
     <div class="hdr-right">
-      <span class="hdr-ver">v2.3.3</span>
+      <span class="hdr-ver">v2.3.4</span>
       <button class="hdr-btn" onclick="openPanel()">+ Add New</button>
       <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
       <button class="hdr-icon" onclick="toggleFS()" title="Fullscreen">⛶</button>
@@ -908,6 +909,39 @@ main{padding:0 var(--content-pad) 0;max-width:1160px;margin:0 auto;}
       <div class="qs-row">
         <div class="qs-label">Letter Spacing — <span id="qsPtitleLsV">0.8px</span></div>
         <input type="range" min="0" max="8" step="0.5" value="0.8" id="qsPtitleLsR" oninput="setPtitleLs(this.value);document.getElementById('qsPtitleLsV').textContent=this.value+'px'" style="accent-color:var(--acc);width:100%">
+      </div>
+    </div>
+    <div class="qs-sec">
+      <div class="qs-sec-title">Subtitle</div>
+      <div class="qs-row">
+        <div class="qs-label">Size — <span id="qsSubSzV">9px</span></div>
+        <input type="range" min="7" max="18" value="9" id="qsSubSzR" oninput="setSubSz(this.value);document.getElementById('qsSubSzV').textContent=this.value+'px'" style="accent-color:var(--acc);width:100%">
+      </div>
+    </div>
+    <div class="qs-sec">
+      <div class="qs-sec-title">Content Padding</div>
+      <div class="qs-row">
+        <div class="qs-label">Left &amp; Right — <span id="qsContentPadV">24px</span></div>
+        <input type="range" min="0" max="120" value="24" id="qsContentPadR" oninput="setContentPad(this.value);document.getElementById('qsContentPadV').textContent=this.value+'px'" style="accent-color:var(--acc);width:100%">
+      </div>
+    </div>
+    <div class="qs-sec">
+      <div class="qs-sec-title">Ascended Master Notes</div>
+      <div class="qs-row">
+        <div class="qs-label">Font Size — <span id="qsNotesSzV">11.5px</span></div>
+        <input type="range" min="9" max="18" step="0.5" value="11.5" id="qsNotesSzR" oninput="setNotesSz(this.value);document.getElementById('qsNotesSzV').textContent=this.value+'px'" style="accent-color:var(--acc);width:100%">
+      </div>
+      <div class="qs-row">
+        <div class="qs-label">Line Height — <span id="qsNotesLhV">1.5</span></div>
+        <input type="range" min="1" max="3" step="0.05" value="1.5" id="qsNotesLhR" oninput="setNotesLh(this.value);document.getElementById('qsNotesLhV').textContent=this.value" style="accent-color:var(--acc);width:100%">
+      </div>
+      <div class="qs-row">
+        <div class="qs-label">Color</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="color" id="qsNotesColorPick" value="#6A6490" oninput="setNotesColor(this.value);document.getElementById('qsNotesColorSwatch').style.background=this.value" style="width:32px;height:24px;border:none;border-radius:4px;cursor:pointer;padding:1px;">
+          <div id="qsNotesColorSwatch" style="width:24px;height:24px;border-radius:4px;background:#6A6490;border:1px solid rgba(255,255,255,.1)"></div>
+          <button class="qs-chip" onclick="resetNotesColor();document.getElementById('qsNotesColorPick').value='#6A6490';document.getElementById('qsNotesColorSwatch').style.background='#6A6490'" style="padding:3px 9px;font-size:10.5px">Reset</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1898,16 +1932,21 @@ function toggleQS() {
 }
 function closeQS() { document.getElementById("qsPanel").classList.remove("open"); }
 function syncQSValues() {
-  // Sync all slider values from current cfg
   const sv = (id,v) => { const el=document.getElementById(id); if(el) el.value=v; };
   const st = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
-  sv("qsFontSzR", cfg.fontSize??15);       st("qsFontSzV", (cfg.fontSize??15)+"px");
-  sv("qsBodyLsR", cfg.bodyLs??0);          st("qsBodyLsV", (cfg.bodyLs??0)+"px");
-  sv("qsBodyLhR", cfg.bodyLh??1.6);        st("qsBodyLhV", cfg.bodyLh??1.6);
-  sv("qsLogoSzR", cfg.logoSize??23);       st("qsLogoSzV", (cfg.logoSize??23)+"px");
-  sv("qsLogoLsR", cfg.logoLs??0);          st("qsLogoLsV", (cfg.logoLs??0)+"px");
-  sv("qsPtitleSzR", cfg.ptitleSize??15);   st("qsPtitleSzV", (cfg.ptitleSize??15)+"px");
-  sv("qsPtitleLsR", cfg.ptitleLs??0.8);    st("qsPtitleLsV", (cfg.ptitleLs??0.8)+"px");
+  const sc = (id,v) => { const el=document.getElementById(id); if(el) { el.value=v; const sw=document.getElementById(id.replace("Pick","Swatch")); if(sw) sw.style.background=v; } };
+  sv("qsFontSzR",   cfg.fontSize??15);      st("qsFontSzV",   (cfg.fontSize??15)+"px");
+  sv("qsBodyLsR",   cfg.bodyLs??0);         st("qsBodyLsV",   (cfg.bodyLs??0)+"px");
+  sv("qsBodyLhR",   cfg.bodyLh??1.6);       st("qsBodyLhV",   cfg.bodyLh??1.6);
+  sv("qsLogoSzR",   cfg.logoSize??23);      st("qsLogoSzV",   (cfg.logoSize??23)+"px");
+  sv("qsLogoLsR",   cfg.logoLs??0);         st("qsLogoLsV",   (cfg.logoLs??0)+"px");
+  sv("qsPtitleSzR", cfg.ptitleSize??15);    st("qsPtitleSzV", (cfg.ptitleSize??15)+"px");
+  sv("qsPtitleLsR", cfg.ptitleLs??0.8);     st("qsPtitleLsV", (cfg.ptitleLs??0.8)+"px");
+  sv("qsSubSzR",    cfg.subSize??9);        st("qsSubSzV",    (cfg.subSize??9)+"px");
+  sv("qsContentPadR", cfg.contentPad??24);  st("qsContentPadV", (cfg.contentPad??24)+"px");
+  sv("qsNotesSzR",  cfg.notesSz??11.5);     st("qsNotesSzV",  (cfg.notesSz??11.5)+"px");
+  sv("qsNotesLhR",  cfg.notesLh??1.5);      st("qsNotesLhV",  cfg.notesLh??1.5);
+  sc("qsNotesColorPick", cfg.notesColor??"#6A6490");
   syncQSFontChips(); syncQSLogoChips();
 }
 function syncQSFontChips() {
