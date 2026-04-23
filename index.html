@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.D.A.M.S. v2.2.2</title>
+<title>A.D.A.M.S. v2.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Josefin+Sans:wght@600;700&family=Raleway:wght@700&family=Outfit:wght@700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -130,14 +130,30 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 .aff-row:last-child{border-bottom:none;}
 .aff-num{font-family:var(--fm);font-size:9.5px;color:var(--muted);width:20px;flex-shrink:0;padding-top:4px;text-align:right;}
 .aff-body{flex:1;min-width:0;}
-.aff-text{font-size:var(--fs);line-height:1.68;color:var(--text);cursor:text;border-radius:4px;padding:2px 4px;outline:none;display:block;width:100%;background:transparent;border:1px solid transparent;font-family:var(--fb);transition:background .11s,border-color .11s;}
+.fmt-toolbar{
+  display:none;position:absolute;z-index:600;
+  background:#1A1730;border:1px solid rgba(124,111,205,.35);
+  border-radius:8px;padding:4px 6px;gap:3px;align-items:center;
+  box-shadow:0 6px 20px rgba(0,0,0,.5);
+  flex-wrap:wrap;max-width:280px;
+}
+[data-theme="light"] .fmt-toolbar{background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.15);}
+.fmt-toolbar.visible{display:flex;}
+.fmt-btn{background:none;border:none;cursor:pointer;font-size:13px;padding:3px 7px;border-radius:5px;color:rgba(168,159,245,.7);transition:all .12s;font-family:var(--fb);line-height:1;}
+.fmt-btn:hover{background:rgba(124,111,205,.2);color:var(--acc2);}
+.fmt-btn.active{background:rgba(124,111,205,.25);color:var(--acc2);}
+.fmt-sep{width:1px;height:16px;background:rgba(124,111,205,.2);margin:0 2px;flex-shrink:0;}
+.fmt-color-btn{width:20px;height:20px;border-radius:4px;border:2px solid rgba(255,255,255,.2);cursor:pointer;padding:0;flex-shrink:0;transition:border-color .12s;}
+.fmt-color-btn:hover{border-color:var(--acc2);}
+.fmt-color-inp{width:0;height:0;opacity:0;position:absolute;pointer-events:none;}
+.aff-text{font-size:var(--fs);line-height:var(--body-lh,1.6);color:var(--text);cursor:text;border-radius:4px;padding:2px 4px;outline:none;display:block;width:100%;background:transparent;border:1px solid transparent;font-family:var(--fb);transition:background .11s,border-color .11s;}
 .aff-text:focus{background:var(--bg4);border-color:var(--acc);}
 [data-theme="light"] .aff-text:focus{background:#EEEAF8;}
 .aff-author{font-size:12px;color:var(--author-color);margin-top:3px;padding-left:4px;font-style:italic;}
 .aff-author .master-link{cursor:pointer;transition:color .12s;text-decoration:none;}
 .aff-author .master-link:hover{color:var(--acc2);text-decoration:underline;}
 .aff-notes{font-size:11.5px;color:var(--muted);margin-top:4px;padding-left:4px;line-height:1.5;font-style:italic;opacity:.8;}
-.aff-text-quote{color:#8878C8;font-style:italic;}
+.aff-text-quote{color:#8878C8;font-style:italic;line-height:var(--body-lh,1.6);}
 [data-theme="light"] .aff-text-quote{color:#5A4A9A;}
 .aff-quote-wrap{position:relative;padding-left:22px;}
 .aff-quote-open{
@@ -370,7 +386,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
       <div class="logo-acronym" id="logoAcronym">Ascended Master Database of Affirmations, Quotes &amp; Mantras</div>
     </div>
     <div class="hdr-right">
-      <span class="hdr-ver">v2.2.2</span>
+      <span class="hdr-ver">v2.3</span>
       <button class="hdr-btn" onclick="openPanel()">+ Add New</button>
       <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
       <button class="hdr-icon" onclick="toggleFS()" title="Fullscreen">⛶</button>
@@ -790,6 +806,28 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
   </div>
 </div>
 
+<!-- FORMATTING TOOLBAR (singleton, repositioned on selection) -->
+<div id="fmtToolbar" class="fmt-toolbar" onmousedown="event.preventDefault()">
+  <button class="fmt-btn" onclick="fmt('bold')" title="Bold" id="fmtB"><b>B</b></button>
+  <button class="fmt-btn" onclick="fmt('italic')" title="Italic" id="fmtI"><i>I</i></button>
+  <button class="fmt-btn" onclick="fmt('underline')" title="Underline" id="fmtU"><u>U</u></button>
+  <button class="fmt-btn" onclick="fmt('strikeThrough')" title="Strikethrough" id="fmtS"><s>S</s></button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="fmt('removeFormat')" title="Clear formatting" style="font-size:11px;opacity:.7">✕</button>
+  <div class="fmt-sep"></div>
+  <div style="position:relative;display:flex;align-items:center;gap:3px;flex-wrap:wrap;">
+    <button class="fmt-color-btn" style="background:#9B6DFF" onclick="setFmtColor('#9B6DFF')" title="Violet"></button>
+    <button class="fmt-color-btn" style="background:#D4882A" onclick="setFmtColor('#D4882A')" title="Amber"></button>
+    <button class="fmt-color-btn" style="background:#4CAF78" onclick="setFmtColor('#4CAF78')" title="Green"></button>
+    <button class="fmt-color-btn" style="background:#E8607A" onclick="setFmtColor('#E8607A')" title="Rose"></button>
+    <button class="fmt-color-btn" style="background:#6AABEE" onclick="setFmtColor('#6AABEE')" title="Blue"></button>
+    <button class="fmt-color-btn" style="background:#E8E4F8" onclick="setFmtColor('#E8E4F8')" title="White"></button>
+    <label class="fmt-color-btn" style="background:conic-gradient(red,yellow,green,cyan,blue,magenta,red);display:flex;align-items:center;justify-content:center;" title="Custom color">
+      <input type="color" class="fmt-color-inp" id="customColorInp" oninput="setFmtColor(this.value)">
+    </label>
+  </div>
+</div>
+
 <!-- QUICK FONT SETTINGS PANEL -->
 <div id="qsPanel">
   <div class="qs-hdr">
@@ -1135,6 +1173,17 @@ function highlight(text) {
     .replace(/Violet Flame/gi, '<span class="iam">Violet Flame</span>')
     .replace(/Sacred Fire/gi, '<span class="sf">Sacred Fire</span>');
 }
+// renderText: if text contains HTML tags, render as-is (rich text already stored);
+// otherwise run highlight() on plain text
+function renderText(text) {
+  if(!text) return "";
+  // Detect if it looks like stored HTML (has tags beyond our highlights)
+  if(/<(b|i|u|s|span style|font)[^>]*>/i.test(text)) {
+    // Already rich HTML — still apply our keyword highlights to plain text nodes
+    return text;
+  }
+  return highlight(text);
+}
 
 /* ═══════════════════════════ THEME ═══════════════════════════ */
 function toggleTheme() { cfg.theme = cfg.theme === "dark" ? "light" : "dark"; applyTheme(); saveCfg(); }
@@ -1269,11 +1318,11 @@ function buildRow(a, num, opts) {
         if(isQ) {
           return '<div class="aff-quote-wrap">' +
             '<span class="aff-quote-open">“</span>' +
-            '<div class="aff-text aff-text-quote" contenteditable="true" onblur="inlineSave(' + a.id + ',this)" spellcheck="false">' +
+            '<div class="aff-text aff-text-quote" contenteditable="true" onblur="inlineSave(' + a.id + ',this)" onfocus="attachFmtToolbar(this)" onkeyup="updateFmtState()" onmouseup="updateFmtState()" spellcheck="false">' +
             highlight(a.text) +
             '</div></div>';
         }
-        return '<div class="aff-text" contenteditable="true" onblur="inlineSave(' + a.id + ',this)" spellcheck="false">' + highlight(a.text) + '</div>';
+        return '<div class="aff-text" contenteditable="true" onblur="inlineSave(' + a.id + ',this)" onfocus="attachFmtToolbar(this)" onkeyup="updateFmtState()" onmouseup="updateFmtState()" spellcheck="false">' + renderText(a.text) + '</div>';
       })() +
       masterHtml + noteHtml + tagHtml +
     '</div>' +
@@ -1528,10 +1577,11 @@ function renderStats() {
 /* ═══════════════════════════ INLINE SAVE ═══════════════════════════ */
 function inlineSave(id, el) {
   const a = affs.find(x => x.id === id); if(!a) return;
-  const tmp = document.createElement("div"); tmp.innerHTML = el.innerHTML;
-  const text = tmp.textContent.trim();
-  if(a.text === text) return;
-  a.text = text; a.modified = new Date().toISOString();
+  // Save raw innerHTML to preserve bold/italic/color formatting
+  const html = el.innerHTML.trim();
+  if(a.text === html) return;
+  a.text = html; a.modified = new Date().toISOString();
+  hideFmtToolbar();
   saveData(); flash("Saved ✦");
 }
 
@@ -1593,7 +1643,11 @@ function openEditPanel(id) {
 }
 function closePanel() { document.getElementById("panelOv").classList.remove("open"); document.getElementById("slidePanel").classList.remove("open"); }
 function saveAff() {
-  const text = document.getElementById("fText").value.trim(); if(!text) { alert("Please enter the text."); return; }
+  // fText is now a contenteditable div in editing, but we keep textarea for add panel
+  // Use value for textarea (add panel), strip for display safety
+  const textEl = document.getElementById("fText");
+  const text = (textEl.tagName === "TEXTAREA" ? textEl.value : textEl.innerHTML).trim();
+  if(!text) { alert("Please enter the text."); return; }
   const eid = +document.getElementById("editId").value || null;
   const data = { type:document.getElementById("fType").value, text, master:document.getElementById("fMaster").value.trim(), source:document.getElementById("fSource").value.trim(), notes:document.getElementById("fNotes").value.trim(), tags:[...panelTags], modified:new Date().toISOString() };
   if(eid) { const idx = affs.findIndex(x => x.id === eid); if(idx > -1) affs[idx] = Object.assign(affs[idx], data); }
@@ -1838,11 +1892,86 @@ function syncQSLogoChips() {
   document.querySelectorAll("[data-qlf]").forEach(c => c.classList.toggle("sel", c.dataset.qlf === cfg.logoFont));
 }
 
+/* ═══ RICH TEXT FORMATTING ═══ */
+let _fmtTarget = null;
+let _savedRange = null;
+
+function attachFmtToolbar(el) {
+  _fmtTarget = el;
+}
+function hideFmtToolbar() {
+  document.getElementById("fmtToolbar").classList.remove("visible");
+  _fmtTarget = null;
+}
+function updateFmtState() {
+  const sel = window.getSelection();
+  if(!sel || sel.rangeCount === 0 || sel.isCollapsed) {
+    hideFmtToolbar(); return;
+  }
+  // Check selection is inside an aff-text
+  const range = sel.getRangeAt(0);
+  const container = range.commonAncestorContainer;
+  const affText = container.nodeType === 3
+    ? container.parentElement?.closest(".aff-text")
+    : container.closest?.(".aff-text");
+  if(!affText) { hideFmtToolbar(); return; }
+  _fmtTarget = affText;
+  // Position toolbar above the selection
+  const rect = range.getBoundingClientRect();
+  const toolbar = document.getElementById("fmtToolbar");
+  toolbar.classList.add("visible");
+  const top = rect.top + window.scrollY - toolbar.offsetHeight - 8;
+  const left = Math.min(rect.left + window.scrollX, window.innerWidth - 290);
+  toolbar.style.top = Math.max(4, top) + "px";
+  toolbar.style.left = Math.max(4, left) + "px";
+  // Update active state of buttons
+  document.getElementById("fmtB").classList.toggle("active", document.queryCommandState("bold"));
+  document.getElementById("fmtI").classList.toggle("active", document.queryCommandState("italic"));
+  document.getElementById("fmtU").classList.toggle("active", document.queryCommandState("underline"));
+  document.getElementById("fmtS").classList.toggle("active", document.queryCommandState("strikeThrough"));
+}
+function fmt(cmd) {
+  document.execCommand(cmd, false, null);
+  updateFmtState();
+  // Auto-save after formatting
+  if(_fmtTarget) {
+    const id = +_fmtTarget.closest(".aff-row")?.dataset.id;
+    if(id) inlineSave(id, _fmtTarget);
+  }
+}
+function setFmtColor(color) {
+  document.execCommand("foreColor", false, color);
+  updateFmtState();
+  if(_fmtTarget) {
+    const id = +_fmtTarget.closest(".aff-row")?.dataset.id;
+    if(id) inlineSave(id, _fmtTarget);
+  }
+}
+// Hide toolbar on click outside
+document.addEventListener("mousedown", e => {
+  const toolbar = document.getElementById("fmtToolbar");
+  if(toolbar && !toolbar.contains(e.target) && !e.target.closest(".aff-text")) {
+    hideFmtToolbar();
+  }
+});
+document.addEventListener("selectionchange", () => {
+  const sel = window.getSelection();
+  if(!sel || sel.isCollapsed) {
+    // Small delay so toolbar click doesn't immediately hide
+    setTimeout(() => {
+      const sel2 = window.getSelection();
+      if(!sel2 || sel2.isCollapsed) hideFmtToolbar();
+    }, 150);
+  }
+});
+
 /* ═══ COPY TO CLIPBOARD ═══ */
 function copyAff(id, btn) {
   const a = affs.find(x => x.id === id); if(!a) return;
   // Build clean text: text + attribution if present
-  let text = a.text;
+  // Strip HTML tags for clipboard (plain text copy)
+  const tmp = document.createElement("div"); tmp.innerHTML = a.text;
+  let text = tmp.textContent || tmp.innerText || a.text;
   if(a.master) text += "\n— " + a.master;
   if(a.source) text += ", " + a.source;
   navigator.clipboard.writeText(text).then(() => {
