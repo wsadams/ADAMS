@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.D.A.M.S. v2.3</title>
+<title>A.D.A.M.S. v2.3.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Josefin+Sans:wght@600;700&family=Raleway:wght@700&family=Outfit:wght@700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -17,6 +17,10 @@
   --author-color:#9A94C0;
   --body-ls:0px;
   --body-lh:1.6;
+  --content-pad:24px;
+  --notes-size:11.5px;
+  --notes-lh:1.5;
+  --notes-color:#6A6490;
   --sf-color:#D4882A;
   --nav-item-color:rgba(168,159,245,.4); --nav-item-size:12.5px;
   --hdr-top-pad:0px; --hdr-bot-pad:0px;
@@ -59,6 +63,7 @@ header{
   padding:var(--hdr-top-pad) var(--hdr-pad) var(--hdr-bot-pad); display:flex; align-items:center; justify-content:space-between; gap:14px;
 }
 .logo-block{display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
+.logo-sub{font-family:var(--fb);font-size:var(--sub-size, 9px);color:rgba(168,159,245,.38);letter-spacing:1px;text-transform:none;font-weight:300;margin-top:1px;}
 .logo-acronym{
   font-family:var(--fh); font-size:var(--logo-size); font-weight:400;
   letter-spacing:var(--logo-ls); line-height:1;
@@ -82,7 +87,7 @@ header{
 .nbadge{background:rgba(124,111,205,.14);color:var(--acc2);font-size:9px;padding:1px 5px;border-radius:99px;font-family:var(--fm);border:1px solid rgba(124,111,205,.18);}
 
 /* ══ MAIN ══ */
-main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
+main{padding:0 var(--content-pad) 0;max-width:1160px;margin:0 auto;}
 .page{display:none;animation:fu .18s ease;}
 .page.active{display:flex;flex-direction:column;min-height:calc(100vh - 102px);}
 @keyframes fu{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
@@ -152,7 +157,7 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 .aff-author{font-size:12px;color:var(--author-color);margin-top:3px;padding-left:4px;font-style:italic;}
 .aff-author .master-link{cursor:pointer;transition:color .12s;text-decoration:none;}
 .aff-author .master-link:hover{color:var(--acc2);text-decoration:underline;}
-.aff-notes{font-size:11.5px;color:var(--muted);margin-top:4px;padding-left:4px;line-height:1.5;font-style:italic;opacity:.8;}
+.aff-notes{font-size:var(--notes-size);color:var(--notes-color);margin-top:4px;padding-left:4px;line-height:var(--notes-lh);font-style:italic;}
 .aff-text-quote{color:#8878C8;font-style:italic;line-height:var(--body-lh,1.6);}
 [data-theme="light"] .aff-text-quote{color:#5A4A9A;}
 .aff-quote-wrap{position:relative;padding-left:22px;}
@@ -167,7 +172,15 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 .aff-tag:hover{background:var(--acc3);color:var(--acc2);border-color:var(--acc-b);}
 [data-theme="light"] .aff-tag{background:var(--bg4);}
 .aff-actions{display:flex;gap:1px;flex-shrink:0;padding-top:2px;}
-.row-btn{background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:3px 4px;border-radius:4px;transition:all .11s;line-height:1;}
+.row-btn{background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:3px 4px;border-radius:4px;transition:all .11s;line-height:1;position:relative;}
+.row-btn[title]:hover::after{
+  content:attr(title);
+  position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);
+  background:#1A1730;color:rgba(220,215,255,.85);font-size:10px;white-space:nowrap;
+  padding:3px 8px;border-radius:5px;border:1px solid rgba(124,111,205,.25);
+  font-family:var(--fm);letter-spacing:.3px;pointer-events:none;z-index:700;
+}
+[data-theme="light"] .row-btn[title]:hover::after{background:#fff;color:#1A1830;box-shadow:0 2px 8px rgba(0,0,0,.12);}
 .row-btn:hover{color:var(--acc2);background:var(--acc3);}
 .row-btn.fav.on{color:#E8607A;}
 .row-btn.fav:hover{color:#E8607A;}
@@ -211,8 +224,8 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
   right:50%;
   margin-left:-50vw;
   margin-right:-50vw;
-  padding-left:calc(50vw - 556px);
-  padding-right:calc(50vw - 556px);
+  padding-left:calc(50vw - 556px + var(--content-pad) - 24px);
+  padding-right:calc(50vw - 556px + var(--content-pad) - 24px);
 }
 @media(max-width:1208px){
   .page.active > .page-footer{
@@ -383,10 +396,11 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
 <div class="header-wrap">
   <header>
     <div class="logo-block">
-      <div class="logo-acronym" id="logoAcronym">Ascended Master Database of Affirmations, Quotes &amp; Mantras</div>
+      <div class="logo-acronym" id="logoAcronym">A.D.A.M.S.</div>
+      <div class="logo-sub" id="logoSub">Ascended Master Database of Affirmations, Quotes &amp; Mantras</div>
     </div>
     <div class="hdr-right">
-      <span class="hdr-ver">v2.3</span>
+      <span class="hdr-ver">v2.3.3</span>
       <button class="hdr-btn" onclick="openPanel()">+ Add New</button>
       <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
       <button class="hdr-icon" onclick="toggleFS()" title="Fullscreen">⛶</button>
@@ -552,6 +566,10 @@ main{padding:0 24px 0;max-width:1160px;margin:0 auto;}
         <div style="margin-top:11px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Letter Spacing</div>
           <div class="range-row"><input type="range" min="0" max="20" value="0" id="logoLsR" oninput="setLogoLs(this.value)"><span class="range-val" id="logoLsV">6px</span></div>
+        </div>
+        <div style="margin-top:11px">
+          <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Subtitle Size</div>
+          <div class="range-row"><input type="range" min="7" max="18" value="9" id="subSzR" oninput="setSubSz(this.value)"><span class="range-val" id="subSzV">9px</span></div>
         </div>
         <div style="margin-top:11px">
           <div style="font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px">Header Padding (left &amp; right)</div>
@@ -983,7 +1001,8 @@ const SEED = [
 // DEFAULT_CFG is the factory baseline — never overwritten by localStorage
 const DEFAULT_CFG = {
   theme:"dark", defaultTheme:"dark",
-  font:"DM Sans", fontSize:17, bodyLs:0, bodyLh:1.6, titlePad:23, ptitleSize:15, ptitleLs:0.8,
+  font:"DM Sans", fontSize:17, bodyLs:0, bodyLh:1.6, contentPad:24,
+  notesSz:11.5, notesLh:1.5, notesColor:"#6A6490", titlePad:23, ptitleSize:15, ptitleLs:0.8,
   logoFont:"Raleway", logoSize:23, logoLs:0, logoCaps:0, hdrPad:20, hdrVPad:15,
   hdrColor:"#0A0812", authorColor:"#9A94C0", navColor:"#9A94C0", navSize:13,
   iamColor:"#9B6DFF", sfColor:"#D4882A",
@@ -1218,6 +1237,7 @@ function setPalRaw(name) {
 
 /* ═══════════════════════════ HEADER SETTINGS ═══════════════════════════ */
 function setLogoFont(f, el) { cfg.logoFont = f; document.documentElement.style.setProperty("--fh", '"' + f + '",sans-serif'); document.querySelectorAll("[data-lf]").forEach(c => c.classList.toggle("sel", c.dataset.lf === f)); saveCfg(); }
+function setSubSz(v)   { cfg.subSize = +v; document.documentElement.style.setProperty("--sub-size", v+"px"); document.getElementById("subSzV") && (document.getElementById("subSzV").textContent = v+"px"); saveCfg(); }
 function setLogoSz(v)  { cfg.logoSize = +v; document.documentElement.style.setProperty("--logo-size", v+"px"); document.getElementById("logoSzV").textContent = v+"px"; saveCfg(); }
 function setLogoLs(v)  { cfg.logoLs = +v; document.documentElement.style.setProperty("--logo-ls", v+"px"); document.getElementById("logoLsV").textContent = v+"px"; saveCfg(); }
 // subSize removed v1.3
@@ -1226,6 +1246,11 @@ function resetHdrColor(){ document.getElementById("hdrColorPick").value = "#0A08
 
 /* ═══════════════════════════ FONT ═══════════════════════════ */
 function setFont(f, el)  { cfg.font = f; document.documentElement.style.setProperty("--fb", '"' + f + '",sans-serif'); document.querySelectorAll("[data-font]").forEach(c => c.classList.toggle("sel", c.dataset.font === f)); saveCfg(); }
+function setContentPad(v) { cfg.contentPad = +v; document.documentElement.style.setProperty("--content-pad", v+"px"); document.getElementById("contentPadV").textContent = v+"px"; saveCfg(); }
+function setNotesSz(v)    { cfg.notesSz = +v; document.documentElement.style.setProperty("--notes-size", v+"px"); document.getElementById("notesSzV").textContent = v+"px"; saveCfg(); }
+function setNotesLh(v)    { cfg.notesLh = +v; document.documentElement.style.setProperty("--notes-lh", v); document.getElementById("notesLhV").textContent = v; saveCfg(); }
+function setNotesColor(v) { cfg.notesColor = v; document.documentElement.style.setProperty("--notes-color", v); const el=document.getElementById("notesColorVal"); if(el)el.textContent=v; saveCfg(); }
+function resetNotesColor(){ document.getElementById("notesColorPick").value="#6A6490"; setNotesColor("#6A6490"); }
 function setBodyLh(v)    { cfg.bodyLh = +v; document.documentElement.style.setProperty("--body-lh", v); document.getElementById("bodyLhV") && (document.getElementById("bodyLhV").textContent = v); saveCfg(); }
 function setBodyLs(v)    { cfg.bodyLs = +v; document.documentElement.style.setProperty("--body-ls", v+"px"); document.getElementById("bodyLsV").textContent = v+"px"; saveCfg(); }
 function setFontSz(v)    { cfg.fontSize = +v; document.documentElement.style.setProperty("--fs", v+"px"); document.getElementById("fontSzV").textContent = v+"px"; saveCfg(); }
@@ -1331,8 +1356,8 @@ function buildRow(a, num, opts) {
       '<button class="row-btn copy-btn" onclick="copyAff(' + a.id + ',this)" title="Copy to clipboard">⎘</button>' +
       '<button class="row-btn ' + (a.flagged?"flag-on":"") + '" onclick="toggleFlag(' + a.id + ')" title="Flag for review">⚑</button>' +
       plBtn +
-      '<button class="row-btn" onclick="openEditPanel(' + a.id + ')" title="Edit">✎</button>' +
-      '<button class="row-btn del" onclick="delAff(' + a.id + ')" title="Delete">✕</button>' +
+      '<button class="row-btn" onclick="openEditPanel(' + a.id + ')" title="Edit affirmation">✎</button>' +
+      '<button class="row-btn del" onclick="delAff(' + a.id + ')" title="Delete affirmation">✕</button>' +
     '</div></div>';
 }
 
@@ -2126,6 +2151,10 @@ function applyAll() {
   document.documentElement.style.setProperty("--fs",        (cfg.fontSize  ?? 15)  + "px");
   document.documentElement.style.setProperty("--body-ls",    (cfg.bodyLs    ?? 0)   + "px");
   document.documentElement.style.setProperty("--body-lh",    cfg.bodyLh    ?? 1.6);
+  document.documentElement.style.setProperty("--content-pad",(cfg.contentPad ?? 24) + "px");
+  document.documentElement.style.setProperty("--notes-size", (cfg.notesSz ?? 11.5) + "px");
+  document.documentElement.style.setProperty("--notes-lh",   cfg.notesLh ?? 1.5);
+  document.documentElement.style.setProperty("--notes-color",cfg.notesColor ?? "#6A6490");
   document.documentElement.style.setProperty("--fb",        '"' + (cfg.font || "Nunito") + '",sans-serif');
   document.documentElement.style.setProperty("--title-pad", (cfg.titlePad  ?? 14)  + "px");
   document.documentElement.style.setProperty("--fh",        '"' + (cfg.logoFont || "Bebas Neue") + '",sans-serif');
@@ -2138,6 +2167,10 @@ function applyAll() {
   sv("fontSzR",cfg.fontSize??15);     st("fontSzV",(cfg.fontSize??15)+"px");
   sv("bodyLsR",cfg.bodyLs??0);          st("bodyLsV",(cfg.bodyLs??0)+"px");
   sv("bodyLhR",cfg.bodyLh??1.6);         st("bodyLhV",cfg.bodyLh??1.6);
+  sv("contentPadR",cfg.contentPad??24);  st("contentPadV",(cfg.contentPad??24)+"px");
+  sv("notesSzR",cfg.notesSz??11.5);      st("notesSzV",(cfg.notesSz??11.5)+"px");
+  sv("notesLhR",cfg.notesLh??1.5);       st("notesLhV",cfg.notesLh??1.5);
+  const ncp2=document.getElementById("notesColorPick"); if(ncp2)ncp2.value=cfg.notesColor??"#6A6490"; st("notesColorVal",cfg.notesColor??"#6A6490");
   sv("titlePadR",cfg.titlePad??14);   st("titlePadV",(cfg.titlePad??14)+"px");
   sv("logoSzR",cfg.logoSize??32);     st("logoSzV",(cfg.logoSize??32)+"px");
   sv("logoLsR",cfg.logoLs??6);        st("logoLsV",(cfg.logoLs??6)+"px");
