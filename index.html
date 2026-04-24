@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.D.A.M.S. v2.3.4</title>
+<title>A.D.A.M.S. v2.3.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Josefin+Sans:wght@600;700&family=Raleway:wght@700&family=Outfit:wght@700&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -267,6 +267,24 @@ main{padding:0 var(--content-pad) 0;max-width:1160px;margin:0 auto;}
 .slide-panel{position:fixed;top:0;right:-520px;width:490px;max-width:96vw;height:100vh;background:var(--bg2);border-left:1px solid var(--border2);z-index:900;transition:right .27s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden;}
 [data-theme="light"] .slide-panel{background:#fff;}
 .slide-panel.open{right:0;}
+.panel-rte-bar{
+  display:flex;align-items:center;gap:2px;flex-wrap:wrap;
+  padding:5px 8px;background:var(--bg3);border:1px solid var(--border2);
+  border-bottom:none;border-radius:7px 7px 0 0;
+}
+[data-theme="light"] .panel-rte-bar{background:#F0EEF8;}
+.panel-rte{
+  min-height:120px;padding:9px 11px;
+  background:var(--inp);border:1px solid var(--border2);
+  border-radius:0 0 7px 7px;
+  color:var(--text);font-family:var(--fb);font-size:var(--fs);
+  line-height:var(--body-lh,1.6);
+  outline:none;cursor:text;
+  transition:border-color .12s;
+}
+.panel-rte:focus{border-color:var(--acc);}
+.panel-rte:empty:before{content:attr(data-placeholder);color:var(--muted);pointer-events:none;}
+[data-theme="light"] .panel-rte{background:#F4F4F6;border-color:rgba(0,0,0,.12);}
 .panel-hdr{padding:15px 19px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .panel-title{font-family:var(--fb);font-size:14.5px;font-weight:600;color:var(--text);}
 .panel-close{background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:2px 5px;border-radius:4px;transition:color .11s;}
@@ -401,7 +419,7 @@ main{padding:0 var(--content-pad) 0;max-width:1160px;margin:0 auto;}
       <div class="logo-sub" id="logoSub">Ascended Master Database of Affirmations, Quotes &amp; Mantras</div>
     </div>
     <div class="hdr-right">
-      <span class="hdr-ver">v2.3.4</span>
+      <span class="hdr-ver">v2.3.5</span>
       <button class="hdr-btn" onclick="openPanel()">+ Add New</button>
       <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
       <button class="hdr-icon" onclick="toggleFS()" title="Fullscreen">⛶</button>
@@ -802,7 +820,28 @@ main{padding:0 var(--content-pad) 0;max-width:1160px;margin:0 auto;}
   <div class="panel-body">
     <input type="hidden" id="editId">
     <div class="field"><label>Type</label><select id="fType"><option>Affirmation</option><option>Long Affirmation</option><option>Decree</option><option>Long Decree</option><option>Quote</option><option>Long Quote</option><option>Prayer</option></select></div>
-    <div class="field"><label>Text *</label><textarea id="fText" placeholder="Enter the affirmation, decree, or quote…" style="min-height:110px"></textarea></div>
+    <div class="field">
+      <label>Text *</label>
+      <div class="panel-rte-bar" id="panelFmtBar">
+        <button type="button" class="fmt-btn" onmousedown="e=>e.preventDefault()" onclick="panelFmt('bold')" title="Bold"><b>B</b></button>
+        <button type="button" class="fmt-btn" onmousedown="e=>e.preventDefault()" onclick="panelFmt('italic')" title="Italic"><i>I</i></button>
+        <button type="button" class="fmt-btn" onmousedown="e=>e.preventDefault()" onclick="panelFmt('underline')" title="Underline"><u>U</u></button>
+        <div class="fmt-sep"></div>
+        <button type="button" class="fmt-btn" onmousedown="e=>e.preventDefault()" onclick="panelFmt('removeFormat')" title="Clear formatting" style="font-size:10px;opacity:.7">✕</button>
+        <div class="fmt-sep"></div>
+        <button type="button" class="fmt-color-btn" style="background:#9B6DFF" onmousedown="event.preventDefault()" onclick="panelFmtColor('#9B6DFF')" title="Violet"></button>
+        <button type="button" class="fmt-color-btn" style="background:#D4882A" onmousedown="event.preventDefault()" onclick="panelFmtColor('#D4882A')" title="Amber"></button>
+        <button type="button" class="fmt-color-btn" style="background:#E8607A" onmousedown="event.preventDefault()" onclick="panelFmtColor('#E8607A')" title="Rose"></button>
+        <button type="button" class="fmt-color-btn" style="background:#4CAF78" onmousedown="event.preventDefault()" onclick="panelFmtColor('#4CAF78')" title="Green"></button>
+        <button type="button" class="fmt-color-btn" style="background:#6AABEE" onmousedown="event.preventDefault()" onclick="panelFmtColor('#6AABEE')" title="Blue"></button>
+        <label class="fmt-color-btn" style="background:conic-gradient(red,yellow,green,cyan,blue,magenta,red)" title="Custom" onmousedown="event.preventDefault()">
+          <input type="color" style="width:0;height:0;opacity:0;position:absolute" id="panelColorInp" oninput="panelFmtColor(this.value)">
+        </label>
+      </div>
+      <div id="fText" contenteditable="true" class="panel-rte"
+        onkeyup="updatePanelFmtState()" onmouseup="updatePanelFmtState()"
+        data-placeholder="Enter the affirmation, decree, or quote…"></div>
+    </div>
     <div class="field"><label>Ascended Master / Speaker</label><input type="text" id="fMaster" placeholder="e.g. Saint Germain, El Morya…"></div>
     <div class="field"><label>Source / Book</label><input type="text" id="fSource" placeholder="e.g. The I AM Discourses, Vol. III"></div>
     <div class="field"><label>Ascended Master Notes</label><textarea id="fNotes" placeholder="What this affirmation does, its ray, its purpose…"></textarea></div>
@@ -810,9 +849,11 @@ main{padding:0 var(--content-pad) 0;max-width:1160px;margin:0 auto;}
       <label>Tags / Categories</label>
       <div class="tag-selected-row" id="tagSelRow"></div>
       <div class="tag-grid-box" id="tagGridBox"></div>
-      <div class="tag-new-row">
-        <input type="text" class="tag-new-inp" id="tagNewInp" placeholder="New tag…">
+      <div class="tag-new-row" style="position:relative;">
+        <input type="text" class="tag-new-inp" id="tagNewInp" placeholder="Type to search or create tag…" autocomplete="off"
+          oninput="tagNewSuggest()" onkeydown="tagNewKeyDown(event)">
         <button class="btn btn-ghost btn-sm" onclick="addNewTag()">+ Add</button>
+        <div id="tagNewDrop" style="display:none;position:absolute;top:100%;left:0;right:50px;background:#1A1730;border:1px solid var(--acc-b);border-radius:7px;box-shadow:0 7px 20px rgba(0,0,0,.4);z-index:700;max-height:160px;overflow-y:auto;margin-top:2px;"></div>
       </div>
     </div>
   </div>
@@ -1222,7 +1263,7 @@ function toggleFS() { if(!document.fullscreenElement) document.documentElement.r
 /* ═══════════════════════════ HIGHLIGHT ═══════════════════════════ */
 function highlight(text) {
   return esc(text)
-    .replace(/\bI AM\b/gi, '<span class="iam">&ldquo;I AM&rdquo;</span>')
+    .replace(/\bI AM\b/gi, '<span class="iam">I AM</span>')
     .replace(/Violet Flame/gi, '<span class="iam">Violet Flame</span>')
     .replace(/Sacred Fire/gi, '<span class="sf">Sacred Fire</span>');
 }
@@ -1675,14 +1716,14 @@ function openPanel() {
   document.getElementById("panelTitle").textContent = "New Affirmation";
   document.getElementById("panelIdLbl").textContent = "";
   document.getElementById("fType").value = "Affirmation";
-  document.getElementById("fText").value = "";
+  const fTextEl = document.getElementById("fText"); if(fTextEl) fTextEl.innerHTML = "";
   document.getElementById("fMaster").value = "";
   document.getElementById("fSource").value = "";
   document.getElementById("fNotes").value = "";
   renderTagGrid();
   document.getElementById("panelOv").classList.add("open");
   document.getElementById("slidePanel").classList.add("open");
-  setTimeout(() => { document.getElementById("fText").focus(); initAC(); }, 300);
+  setTimeout(() => { const ft=document.getElementById("fText"); if(ft)ft.focus(); initAC(); }, 300);
 }
 function openEditPanel(id) {
   const a = affs.find(x => x.id === id); if(!a) return;
@@ -1691,7 +1732,7 @@ function openEditPanel(id) {
   document.getElementById("panelTitle").textContent = "Edit Affirmation";
   document.getElementById("panelIdLbl").textContent = "ID: " + id;
   document.getElementById("fType").value = a.type;
-  document.getElementById("fText").value = a.text;
+  const fTextEl2 = document.getElementById("fText"); if(fTextEl2) fTextEl2.innerHTML = renderText(a.text);
   document.getElementById("fMaster").value = a.master || "";
   document.getElementById("fSource").value = a.source || "";
   document.getElementById("fNotes").value = a.notes || "";
@@ -1702,11 +1743,9 @@ function openEditPanel(id) {
 }
 function closePanel() { document.getElementById("panelOv").classList.remove("open"); document.getElementById("slidePanel").classList.remove("open"); }
 function saveAff() {
-  // fText is now a contenteditable div in editing, but we keep textarea for add panel
-  // Use value for textarea (add panel), strip for display safety
   const textEl = document.getElementById("fText");
-  const text = (textEl.tagName === "TEXTAREA" ? textEl.value : textEl.innerHTML).trim();
-  if(!text) { alert("Please enter the text."); return; }
+  const text = (textEl.innerHTML || "").trim();
+  if(!text || text === "") { alert("Please enter the text."); return; }
   const eid = +document.getElementById("editId").value || null;
   const data = { type:document.getElementById("fType").value, text, master:document.getElementById("fMaster").value.trim(), source:document.getElementById("fSource").value.trim(), notes:document.getElementById("fNotes").value.trim(), tags:[...panelTags], modified:new Date().toISOString() };
   if(eid) { const idx = affs.findIndex(x => x.id === eid); if(idx > -1) affs[idx] = Object.assign(affs[idx], data); }
@@ -1749,6 +1788,40 @@ function addNewTag() {
   inp.value = ""; renderTagGrid();
 }
 document.getElementById("tagNewInp").addEventListener("keydown", e => { if(e.key==="Enter"){e.preventDefault();addNewTag();} });
+function tagNewSuggest() {
+  const inp = document.getElementById("tagNewInp");
+  const drop = document.getElementById("tagNewDrop");
+  const val = inp.value.trim().toLowerCase();
+  if(!val) { drop.style.display="none"; return; }
+  const allTags = getAllTags();
+  const matches = allTags.filter(t => t.toLowerCase().includes(val) && !panelTags.includes(t));
+  if(!matches.length) { drop.style.display="none"; return; }
+  drop.innerHTML = matches.slice(0,10).map(t =>
+    `<div style="padding:7px 12px;font-size:13px;cursor:pointer;color:var(--text);transition:background .09s;"
+      onmousedown="event.preventDefault();selectTagSuggestion('${t.replace(/'/g,"&#39;")}')"
+      onmouseover="this.style.background='rgba(124,111,205,.15)'"
+      onmouseout="this.style.background=''"
+    >${t}</div>`
+  ).join("");
+  drop.style.display = "block";
+}
+function selectTagSuggestion(tag) {
+  const inp = document.getElementById("tagNewInp");
+  inp.value = tag;
+  document.getElementById("tagNewDrop").style.display = "none";
+  addNewTag();
+}
+function tagNewKeyDown(e) {
+  const drop = document.getElementById("tagNewDrop");
+  if(e.key === "Escape") { drop.style.display="none"; return; }
+  if(e.key === "Enter") { e.preventDefault(); addNewTag(); return; }
+}
+document.addEventListener("click", e => {
+  if(!e.target.closest(".tag-new-row")) {
+    const d = document.getElementById("tagNewDrop");
+    if(d) d.style.display = "none";
+  }
+});
 
 /* ═══════════════════════════ AUTOCOMPLETE ═══════════════════════════ */
 function setupAC(inputId, getOptions) {
@@ -1954,6 +2027,24 @@ function syncQSFontChips() {
 }
 function syncQSLogoChips() {
   document.querySelectorAll("[data-qlf]").forEach(c => c.classList.toggle("sel", c.dataset.qlf === cfg.logoFont));
+}
+
+/* ═══ PANEL RICH TEXT EDITOR ═══ */
+function panelFmt(cmd) {
+  const el = document.getElementById("fText"); if(!el) return;
+  el.focus(); document.execCommand(cmd, false, null);
+  updatePanelFmtState();
+}
+function panelFmtColor(color) {
+  const el = document.getElementById("fText"); if(!el) return;
+  el.focus(); document.execCommand("foreColor", false, color);
+}
+function updatePanelFmtState() {
+  const bar = document.getElementById("panelFmtBar"); if(!bar) return;
+  bar.querySelectorAll(".fmt-btn[title]").forEach(btn => {
+    const cmd = {Bold:"bold",Italic:"italic",Underline:"underline"}[btn.title];
+    if(cmd) btn.classList.toggle("active", document.queryCommandState(cmd));
+  });
 }
 
 /* ═══ RICH TEXT FORMATTING ═══ */
